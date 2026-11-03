@@ -52,8 +52,11 @@ export default async function AvisoPage() {
           <p>
             En <strong>Perfil → Borrar mis datos</strong> eliminas todo lo que guardamos de ti, en
             un toque. También puedes pedir acceso, corrección, cancelación u oposición (derechos
-            ARCO) o retirar tu consentimiento escribiéndonos por el mismo chat o grupo donde
-            recibiste el enlace; si lo pides, también borramos tu cuenta de acceso.
+            ARCO) o retirar tu consentimiento escribiendo a{" "}
+            <a href="mailto:josepferre.g@icloud.com" className="text-brand underline">
+              josepferre.g@icloud.com
+            </a>
+            ; si lo pides, también borramos tu cuenta de acceso.
           </p>
         </div>
       </section>
