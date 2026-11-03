@@ -34,7 +34,7 @@ export function ElcsaForm() {
     <button
       type="button"
       disabled={pending}
-      onClick={() => router.push("/inicio")}
+      onClick={() => router.push("/linea-base")}
       className="w-full rounded-2xl bg-brand py-4 text-lg font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
     >
       Continuar

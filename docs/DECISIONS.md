@@ -99,3 +99,23 @@ Consequences / how we work with it:
 
 **Tomorrow's first move**
 - Sign in end-to-end on https://menuyamx.xyz (profile row, `signed_in`, `consent_given`, `elcsa_completed` with empty props), then Feature 4 (baseline + daily logs).
+
+## 2026-11-03 — Public privacy page + Feature 4
+
+**Public privacy page**
+- https://menuyamx.xyz/privacidad, no sign-in (added to the proxy's public paths). Same text as the consent screen (`src/components/PrivacyNotice.tsx`, single source). Linked from the landing and the consent screen. This is MenúYA's privacy policy URL for Google Branding. Nothing changed in Google for any older project (owner's rule).
+
+**Feature 4 — baseline + daily logs**
+- Tables (migration `004`): `menuya_baseline_orders`, `menuya_waste_logs`, `menuya_impulse_logs`. `user_id default auth.uid()`, the check constraints from BUILD_PROMPT, RLS select/insert/delete own rows, explicit GRANTs (authenticated: select/insert/delete; no anon; no update: a wrong entry is deleted and re-entered).
+- Flow: consent → ELCSA → `/linea-base` → `/inicio`. Guards in `src/lib/onboarding.ts`. ELCSA "Continuar" goes to `/linea-base` for every outcome.
+- Baseline: 10 rows (label + amount). Accepts 1–10 filled rows ("si tienes menos de 10, llena los que tengas"), so nobody gets stuck. Saved only once; logs `baseline_done` with `{orders: n}`.
+- **14-day test window: day 1 = the CDMX date the baseline was saved.** Days 1–7 = week 1, 8–14 = week 2. `week` is computed on the server, never sent by the client. Logs outside the window are rejected.
+- All dates use America/Mexico_City (not the server's UTC), so a log at 11 pm CDMX lands on the right day.
+- Log forms: "🗑 Tiré comida" (item 1–60 chars + amount) and "🛵 Pedí algo / compra no planeada" (delivery / OXXO / otro + amount), each for "hoy" or "ayer".
+- Added "✅ Hoy no tiré nada ni compré de más": stores a $0 waste row ("Nada hoy") so a clean day counts toward "X de 7 días registrados". Without it, the adherence bar would punish people who didn't waste anything.
+- Amounts: whole pesos 0–2000. "$150" and "1,500" are accepted (the `$` and commas are stripped); "-5", "abc", "12.5", "999999" are rejected with Spanish messages. Item > 60 chars rejected. The DB checks back up the same limits.
+- Home: "Tu semana N · X de 7 días registrados", "Día N de 14", progress bar, "Registrar hoy" banner when nothing is logged today, the two big buttons, today's list with "Borrar".
+- "Borrar mis datos" now covers all 5 `menuya_` tables.
+
+**Tomorrow's first move**
+- Feature 5 (saving screen, Mi lista, pay button gated by `useCanShowPay()`).

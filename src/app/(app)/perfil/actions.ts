@@ -5,7 +5,13 @@ import { requireUser } from "@/lib/session";
 
 // Tablas de MenúYA con datos del usuario. Se borran con RLS (solo filas propias).
 // El perfil va al final (al borrarlo se pierde el consentimiento).
-const USER_TABLES = ["menuya_events", "menuya_profiles"] as const;
+const USER_TABLES = [
+  "menuya_waste_logs",
+  "menuya_impulse_logs",
+  "menuya_baseline_orders",
+  "menuya_events",
+  "menuya_profiles",
+] as const;
 
 export async function deleteMyData() {
   const { supabase, user } = await requireUser();
