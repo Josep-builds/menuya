@@ -20,6 +20,9 @@ export default function Home() {
       <p className="text-center text-sm text-neutral-500">
         Versión de prueba · datos de demostración
       </p>
+      <Link href="/privacidad" className="text-center text-sm text-neutral-600 underline">
+        Aviso de privacidad
+      </Link>
     </main>
   );
 }
