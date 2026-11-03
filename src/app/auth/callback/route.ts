@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { logEvent } from "@/lib/events";
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
@@ -14,6 +15,8 @@ export async function GET(request: NextRequest) {
   await supabase
     .from("menuya_profiles")
     .upsert({ user_id: data.user.id }, { onConflict: "user_id", ignoreDuplicates: true });
+
+  await logEvent(supabase, "signed_in");
 
   return NextResponse.redirect(`${origin}/aviso`);
 }

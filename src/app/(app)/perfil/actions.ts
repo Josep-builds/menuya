@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/session";
 
 // Tablas de MenúYA con datos del usuario. Se borran con RLS (solo filas propias).
-const USER_TABLES = ["menuya_profiles"] as const;
+// El perfil va al final (al borrarlo se pierde el consentimiento).
+const USER_TABLES = ["menuya_events", "menuya_profiles"] as const;
 
 export async function deleteMyData() {
   const { supabase, user } = await requireUser();

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/session";
 import { consentSchema } from "@/lib/validation";
+import { logEvent } from "@/lib/events";
 
 export type ConsentState = { errors?: Record<string, string> } | undefined;
 
@@ -32,6 +33,7 @@ export async function giveConsent(_prev: ConsentState, formData: FormData): Prom
     { onConflict: "user_id" },
   );
   if (error) return { errors: { form: "No pudimos guardar. Intenta de nuevo." } };
+  await logEvent(supabase, "consent_given");
 
-  redirect("/inicio");
+  redirect("/preguntas");
 }

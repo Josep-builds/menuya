@@ -34,6 +34,7 @@ Consequences / how we work with it:
 - ⚠️ Cross-app risk (not changed, rule 2), re-checked read-only 2026-11-02:
   - mapa-tandeo has **no** triggers on any `auth` table, no event triggers, no triggers in `public`, and no functions that reference `auth.users`. So signing in to MenúYA creates **no** rows in mapa-tandeo tables by itself (only the shared `auth.users` / `auth.identities` / `auth.sessions` rows).
   - But a signed-in MenúYA user *could* write to mapa-tandeo on purpose with the public anon key + their session: `authenticated` has full grants, `devices` policy is `ALL` with `owner = auth.uid()` (`owner` defaults to `auth.uid()`, `blocks` is publicly readable), and once they own a device they can insert `readings`, insert `flags` and insert/update `block_week_stats` for that block. MenúYA's code never touches those tables. Owner decides whether to tighten mapa-tandeo's policies.
+  - **Known risk, accepted by owner (2026-11-03): do NOT change mapa-tandeo's policies yet. Fix after Week 11 is graded.**
 - Stray: the Supabase CLI's `db query --linked` initialises a temporary CLI login role on each run (Supabase-managed, not a schema change).
 
 ## 2026-11-02 — Feature 2: Google sign-in + consent + RLS
@@ -65,3 +66,36 @@ Consequences / how we work with it:
 
 **Tomorrow's first move**
 - Confirm the Redirect URLs are in, sign in end-to-end on https://menuya-theta.vercel.app (profile row created, consent required), then start Feature 3 (on-device ELCSA + comedores referral).
+
+## 2026-11-03 — Domain, Supabase Pro, grants, Google branding check, Feature 3
+
+**Domain**
+- `menuyamx.xyz` bought in Vercel (Vercel DNS, expires 2027-11-03), attached to project `menuya`. Verified it serves the latest production deploy (`menuya-qqaalb76v…`, commit `e3ef780`). **URL of record: https://menuyamx.xyz.** `www.menuyamx.xyz` is not configured.
+- Owner added MenúYA's Redirect URLs in mapa-tandeo (incl. `https://menuyamx.xyz/**`).
+
+**Supabase Pro**
+- Owner is on Pro. Asked to reactivate only `peldano`, `mi-total`, `peldano-venture`. Not done by Claude: the CLI has no restore command and the Management API token lives in the macOS keychain (access denied). Owner restores them from the dashboard.
+
+**Grants (Supabase Data API change, enforced on existing projects from 2026-10-30)**
+- New tables in `public` need explicit `GRANT`s. MenúYA tables: `authenticated` gets only `select, insert, update, delete` (events: no update), `anon` gets nothing, `service_role` full, RLS on.
+- Found and fixed: `menuya_profiles` had inherited `TRUNCATE/TRIGGER/REFERENCES` for `authenticated` from the project's default privileges (`TRUNCATE` ignores RLS) → `db/migrations/002_menuya_grants.sql`. Default privileges and mapa-tandeo tables untouched (mapa-tandeo tables still grant everything to `anon` and `authenticated`, part of the known risk above).
+- Every future `menuya_` migration starts with `revoke all … from anon, authenticated` + explicit grants.
+
+**Google login check (read-only)** — see the session summary for the per-project table. Two Google Cloud projects identified by Client ID prefix (project number): `703858706779` (quien-rompe-paga), `1092950307708` (mapa-tandeo, also used by MenúYA). peldano / mi-total / peldano-venture could not be read while paused. Only peldano.xyz has a public `/privacidad` page.
+
+**Feature 3 — on-device ELCSA + comedores referral**
+- `menuya_events` created early (it's Feature 5's table) because Feature 3 must log `elcsa_completed`. RLS: insert/select/delete own rows; `name` 1–40 chars; `props` must be an object ≤ 2 KB. Also logging `signed_in` (callback) and `consent_given` (consent).
+- Flow: consent → `/preguntas` (ELCSA) → `/inicio`. `/inicio` redirects to `/preguntas` until an `elcsa_completed` event exists.
+- ELCSA: FAO/ELCSA adult-household version, 8 yes/no, last 3 months. Answers live only in React state; cleared as soon as the level is computed. Scoring 0 seguridad / 1–3 leve / 4–6 moderada / 7–8 severa (tested 0–8).
+- Server learns only "completed": the server action takes **no arguments**. Both outcomes call the same action and end with the same "Continuar" → `/inicio`; the comedores screen is rendered inside the same client component (no route change), so URLs, requests and server logs don't reveal the result.
+- The level lives in a React context (`ElcsaProvider`) in tab memory only. `useCanShowPay()` is true **only** if ELCSA was answered in this tab with seguridad/leve. Default (reload, new tab, not answered) = no price, no pay button. Feature 5 must use `useCanShowPay()` for every price/pay element; if hidden, offer "answer the 8 questions again".
+- Comedores screen: no prices. SIBISO comedores sociales/comunitarios, Locatel 55 5658 1111, Red BAMX, with "verifica en los sitios oficiales".
+- "Borrar mis datos" now also deletes `menuya_events`.
+
+**Pending**
+- Owner: restore `peldano`, `mi-total`, `peldano-venture` in the Supabase dashboard; then re-read their Google Client IDs.
+- End-to-end sign-in test with a real Google account on https://menuyamx.xyz.
+- Google branding fixes per project (privacy policy pages missing on 4 sites; weeks 8–12 code must not change → owner decides).
+
+**Tomorrow's first move**
+- Sign in end-to-end on https://menuyamx.xyz (profile row, `signed_in`, `consent_given`, `elcsa_completed` with empty props), then Feature 4 (baseline + daily logs).
