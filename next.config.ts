@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // Casi todas las pantallas dependen de la sesión (cookies), así que usamos
+  // render dinámico clásico en vez de Cache Components.
+  cacheComponents: false,
   turbopack: {
     rules: {
       "*.css": {
