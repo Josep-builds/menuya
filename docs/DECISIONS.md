@@ -119,3 +119,22 @@ Consequences / how we work with it:
 
 **Tomorrow's first move**
 - Feature 5 (saving screen, Mi lista, pay button gated by `useCanShowPay()`).
+
+## 2026-11-03 — Feature 5: saving screen + price trust + event log (Deploy 2)
+
+**Decisions**
+- `menuya_events` already existed (created in Feature 3). Events now written: `signed_in`, `consent_given`, `elcsa_completed`, `baseline_done`, `log_added` (`{type: waste|impulse|nothing, week}`), `saving_viewed`, `pay_link_clicked`. Names are a fixed zod enum on the server; the client can't pick what gets logged. `saving_viewed` fires once per screen visit from a client effect (a ref guard stops duplicates), not on render, so prefetching can't log it.
+- Saving math is a pure function (`src/lib/saving.ts`) with unit tests (`npm test`). Saving = week 1 total − week 2 total (waste + impulse). **During week 2 it compares only the same number of days from both weeks**, so an early, half-empty week 2 can't fake a big saving. The final number appears from day 15.
+- Honest copy: ≥ $60 "¡Pasaste la meta!"; below $60 "Te faltaron $X…"; negative "gastaste $X más…". The bar never goes below 0.
+- Alcohol/tabaco: count + amount from the baseline orders labeled `alcohol_tabaco`, shown in its own card ("Lo que un plan de comidas no arregla") and never counted as possible saving.
+- Mi lista: static, whitelisted basics only (frijol, tortilla, huevo, arroz, jitomate, calabacita, cebolla, naranja and guayaba as seasonal produce). No NOM-051 sealed products. Each item shows a price range + "captura: dic 2025". Bottom line is "Máximo esperado: $X" (sum of the maximums), never one exact total. Labeled "Precio de referencia (demo)". Prices are **invented**.
+- Pay button: "Apoyar MenúYA · $149 por semestre, sin renovación automática" → `NEXT_PUBLIC_PAY_LINK` (set in `.env.local` + Vercel for all environments to the placeholder https://menuyamx.xyz/pago-pendiente, which is public and says "no se te cobró nada"). Owner swaps in the Mercado Pago link later with `vercel env add NEXT_PUBLIC_PAY_LINK … --force` + redeploy.
+- Pay button gating (`useCanShowPay()`):
+  - Shown only if this tab's memory holds an ELCSA result of seguridad/leve.
+  - Moderada/severa in this session: nothing at all (no price, no button, no hint).
+  - No result in memory (reload, new day): a link "contesta otra vez las 8 preguntas" instead of the price.
+- ⚠️ Interpretation for the owner to confirm: "no price anywhere" for moderate/severe is read as **no MenúYA price ($149) and no pay button**. Reference grocery price ranges in Mi lista stay visible to everyone (they sell nothing and help a tight budget). If you want them hidden too, it's a one-line change in `lista/page.tsx`.
+- Bottom nav (Inicio, Lista, Ahorro, Perfil) only on those 4 screens, not during onboarding or the forms. "Plan" from the mockup is left out: no plan feature this week (scope cut).
+
+**Tomorrow's first move**
+- Feature 6: mechanical test pass → `docs/TEST_RESULTS.md`, fix ≥ 1 bug, Deploy 3.
