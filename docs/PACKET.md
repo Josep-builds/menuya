@@ -37,7 +37,7 @@ Prompt to paste into the LLM's image generator (save the result as `docs/mockup.
 
 > Mobile app screen mockup, clean flat UI, Spanish text, warm green and off-white palette. App name "MenúYA" at top. Header: "Tu semana · 3 de 7 días registrados". Big card in the center: "Ahorro esta semana: $48 de $60" with a horizontal progress bar 80% full. Below it, two large one-tap buttons: "🗑 Tiré comida" and "🛵 Pedí algo / compra no planeada". Under those, a small list "Hoy: 1 bolsa de espinaca ($28), 3 tortillas ($6)". Small grey label at the bottom: "Datos de demostración · precios de referencia Profeco QQP, capturados dic 2025". Bottom nav bar with icons: Plan, Lista, Ahorro, Perfil. iPhone frame, realistic, minimal.
 
-`![Contador de Ahorro mockup](mockup.png)`
+![Contador de Ahorro mockup](mockup.png)
 
 ## 5. 📊 Flow
 
