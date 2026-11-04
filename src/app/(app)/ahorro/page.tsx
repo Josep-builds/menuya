@@ -28,7 +28,7 @@ export default async function AhorroPage() {
       ) : (
         <section className="rounded-2xl bg-white p-5">
           <p className="text-sm text-neutral-500">
-            {s.status === "final" ? "Semana 2 vs. semana 1" : `Primeros ${s.daysCompared} días de la semana 2 vs. los mismos días de la semana 1`}
+            {s.status === "final" || s.daysCompared === 7 ? "Semana 2 vs. semana 1" : `Primeros ${s.daysCompared} días de la semana 2 vs. los mismos días de la semana 1`}
           </p>
           <p className="mt-1 text-2xl font-bold">
             Ahorro esta semana: {peso(s.saving)} de {peso(GOAL_MXN)}
