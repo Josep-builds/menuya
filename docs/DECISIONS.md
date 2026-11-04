@@ -172,3 +172,4 @@ Consequences / how we work with it:
 - Cleanup (back to `/linea-base`): `db/seeds/demo_josep_cleanup.sql`. **Run it before using the account for real logging.**
 - `/ahorro` shows "Semana 2 vs. semana 1" once 7 days are compared (it used to say "Primeros 7 días…").
 - 2026-11-04: screenshots taken; cleanup ran. Founder account has 0 baseline, 0 waste, 0 impulse rows (back to `/linea-base`); profile and consent kept. The events from the screenshot session are still there (`log_added` 1, `saving_viewed` 3, `pay_link_clicked` 1, `elcsa_completed` 2, plus `signed_in`/`consent_given`). Exclude the founder account when counting real-user metrics.
+- 2026-11-04: on owner's request, all `menuya_events` rows of the founder account were deleted too (0 left, 0 in the whole table). Profile + consent kept. Since `elcsa_completed` is gone, the founder account goes through `/preguntas` again before `/linea-base`. Metrics no longer need to exclude past founder test events.
