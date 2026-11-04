@@ -163,3 +163,11 @@ Consequences / how we work with it:
 
 **Tomorrow's first move**
 - Run the persona test (Rubén) on https://menuyamx.xyz with the screen list, log every hesitation, fix the worst one, Deploy 4.
+
+## 2026-11-04 — Demo data for persona-test screenshots
+
+- Owner asked for invented demo data in the founder account (josep.builds@gmail.com) so `/ahorro` shows a saving in pesos. Script: `db/seeds/demo_josep.sql`. It refuses to run if the account already has data, and it creates no events.
+- 2026-11-04 = day 14. Week 1 (Oct 22–28): waste $118 + unplanned $247 = $365. Week 2 (Oct 29–Nov 4, today left empty): waste $52 + unplanned $239 = $291. Saving **$74** → "¡Pasaste la meta!". Baseline: 10 orders, 2 of them alcohol/tabaco ($315). Waste items carry "(demo)".
+- Only valid for screenshots on 2026-11-04. From Nov 5 the account shows "Terminaste tus 14 días".
+- Cleanup (back to `/linea-base`): `db/seeds/demo_josep_cleanup.sql`. **Run it before using the account for real logging.**
+- `/ahorro` shows "Semana 2 vs. semana 1" once 7 days are compared (it used to say "Primeros 7 días…").
