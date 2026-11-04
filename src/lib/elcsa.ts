@@ -31,3 +31,14 @@ export function scoreElcsa(answers: readonly boolean[]): ElcsaLevel {
 export function needsReferral(level: ElcsaLevel | null): boolean {
   return level === "moderada" || level === "severa";
 }
+
+/**
+ * Qué hacer con el botón de pago según el resultado EN MEMORIA de esta pestaña.
+ * - null (no contestó aquí / recargó): "retake" → invitar a contestar otra vez, sin precio.
+ * - moderada/severa: "hidden" → nada (ni precio, ni botón, ni pista).
+ * - seguridad/leve: "show".
+ */
+export function payButtonMode(level: ElcsaLevel | null): "retake" | "hidden" | "show" {
+  if (level === null) return "retake";
+  return needsReferral(level) ? "hidden" : "show";
+}

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { ElcsaLevel } from "@/lib/elcsa";
-import { needsReferral } from "@/lib/elcsa";
+import { payButtonMode } from "@/lib/elcsa";
 
 // El resultado vive SOLO en la memoria de esta pestaña. Al recargar se pierde.
 type Ctx = { level: ElcsaLevel | null; setLevel: (l: ElcsaLevel) => void };
@@ -24,5 +24,5 @@ export function useElcsa() {
  */
 export function useCanShowPay() {
   const { level } = useElcsa();
-  return level !== null && !needsReferral(level);
+  return payButtonMode(level) === "show";
 }

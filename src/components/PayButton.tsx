@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useElcsa, useCanShowPay } from "./ElcsaProvider";
+import { useElcsa } from "./ElcsaProvider";
+import { payButtonMode } from "@/lib/elcsa";
 import { trackPayLinkClicked } from "@/lib/event-actions";
 
 const PAY_LINK = process.env.NEXT_PUBLIC_PAY_LINK ?? "";
@@ -13,16 +14,16 @@ const PAY_LINK = process.env.NEXT_PUBLIC_PAY_LINK ?? "";
  */
 export function PayButton() {
   const { level } = useElcsa();
-  const canShow = useCanShowPay();
+  const mode = payButtonMode(level);
 
-  if (level === null) {
+  if (mode === "retake") {
     return (
       <Link href="/preguntas" className="block text-center text-sm text-neutral-600 underline">
         ¿Quieres apoyar a MenúYA? Contesta otra vez las 8 preguntas (no salen de tu teléfono).
       </Link>
     );
   }
-  if (!canShow || !PAY_LINK) return null;
+  if (mode !== "show" || !PAY_LINK) return null;
 
   return (
     <a

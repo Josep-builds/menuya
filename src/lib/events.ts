@@ -15,14 +15,21 @@ export type EventName = (typeof EVENT_NAMES)[number];
 
 const eventSchema = z.object({
   name: z.enum(EVENT_NAMES),
-  props: z.record(z.string().max(40), z.union([z.string().max(60), z.number(), z.boolean()])).default({}),
+  // Mismas llaves y valores que el check de la base (migración 005). Nada más entra.
+  props: z
+    .strictObject({
+      type: z.enum(["waste", "impulse", "nothing"]).optional(),
+      week: z.union([z.literal(1), z.literal(2)]).optional(),
+      orders: z.number().int().min(1).max(10).optional(),
+    })
+    .default({}),
 });
 
 /** Escribe un evento propio (RLS). Nunca recibe respuestas ni puntaje de ELCSA. */
 export async function logEvent(
   supabase: SupabaseClient,
   name: EventName,
-  props: Record<string, string | number | boolean> = {},
+  props: { type?: "waste" | "impulse" | "nothing"; week?: 1 | 2; orders?: number } = {},
 ) {
   const parsed = eventSchema.parse({ name, props });
   await supabase.from("menuya_events").insert({ name: parsed.name, props: parsed.props });
