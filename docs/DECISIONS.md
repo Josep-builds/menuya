@@ -171,3 +171,4 @@ Consequences / how we work with it:
 - Only valid for screenshots on 2026-11-04. From Nov 5 the account shows "Terminaste tus 14 días".
 - Cleanup (back to `/linea-base`): `db/seeds/demo_josep_cleanup.sql`. **Run it before using the account for real logging.**
 - `/ahorro` shows "Semana 2 vs. semana 1" once 7 days are compared (it used to say "Primeros 7 días…").
+- 2026-11-04: screenshots taken; cleanup ran. Founder account has 0 baseline, 0 waste, 0 impulse rows (back to `/linea-base`); profile and consent kept. The events from the screenshot session are still there (`log_added` 1, `saving_viewed` 3, `pay_link_clicked` 1, `elcsa_completed` 2, plus `signed_in`/`consent_given`). Exclude the founder account when counting real-user metrics.
