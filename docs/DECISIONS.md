@@ -138,3 +138,28 @@ Consequences / how we work with it:
 
 **Tomorrow's first move**
 - Feature 6: mechanical test pass → `docs/TEST_RESULTS.md`, fix ≥ 1 bug, Deploy 3.
+
+## 2026-11-04 — Feature 6: mechanical test pass (Deploy 3) + Session Close
+
+**Done**
+- Fix committed after the laptop went to sleep: `da05a70 fix: DB accepted any event name/props…` (migration `005`: whitelist of the 7 event names + `props` keys, strict zod on the server). Found by the two-user RLS test.
+- **Deploy 3:** `1f568ea` on https://menuyamx.xyz (Ready).
+- Mockup: `docs/mockup.png` (from Downloads), embedded in `docs/PACKET.md` §4.
+- `docs/TEST_RESULTS.md`:
+  - PACKET 11A: 1, 2, 3, 6 ✅. 4, 5, 7 ✅ by static checks + DB. 8 manual.
+  - 21/21 unit/static tests, 31 RLS/constraint checks with 0 failures, 33/33 production smoke checks.
+- Test assets in the repo: `npm test` (tsx + node:test), `tests/rls_test.sql` (always rolled back: leaves 0 rows, 0 test users), `tests/smoke.sh`.
+- Owner signed in for real on menuyamx.xyz: 1 profile with consent and exactly 1 `signed_in` / `consent_given` / `elcsa_completed`, all with empty props.
+- Owner reactivated `peldano` and `mi-total` (Supabase Pro).
+
+**Pending**
+- Manual tests: ELCSA with DevTools → Network; moderada/severa end to end (no $149 anywhere); menuyamx.xyz on mobile data; a second real Google account.
+- 🎭 Persona test (PACKET 11B) with the screen list. Fix the worst hesitation → `fix:` commit → Deploy 4.
+- Swap `NEXT_PUBLIC_PAY_LINK` for the real Mercado Pago link (`vercel env add NEXT_PUBLIC_PAY_LINK production --force`, then redeploy).
+- Confirm the "no price" reading (Mi lista reference prices stay visible for moderada/severa).
+- The Google consent screen shows mapa-tandeo's OAuth app name. Older projects' Google branding: owner's rule is to not touch it.
+- Known risks (see TEST_RESULTS): mapa-tandeo policies (fix after Week 11 is graded); users can write their own logs with any `week` through the API.
+- `www.menuyamx.xyz` not configured.
+
+**Tomorrow's first move**
+- Run the persona test (Rubén) on https://menuyamx.xyz with the screen list, log every hesitation, fix the worst one, Deploy 4.
