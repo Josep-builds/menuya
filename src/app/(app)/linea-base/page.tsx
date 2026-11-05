@@ -9,12 +9,14 @@ export default async function LineaBasePage() {
 
   return (
     <main className="flex flex-col gap-5 py-8">
-      <h1 className="text-2xl font-bold">Tus últimos 10 pedidos</h1>
-      <p className="text-neutral-700">
-        Abre tu app de comida a domicilio (Rappi, Uber Eats, DiDi Food…) y revisa tu historial. Para
-        cada uno de tus últimos 10 pedidos, elige por qué lo hiciste y cuánto pagaste.
+      <p className="rounded-xl bg-amber-100 p-3 text-amber-900">
+        Esto nos deja comparar después cuánto ahorraste. Pon solo los que recuerdes.
       </p>
-      <p className="text-sm text-neutral-500">Si tienes menos de 10, llena los que tengas.</p>
+      <h1 className="text-2xl font-bold">Tus últimos pedidos</h1>
+      <p className="text-neutral-700">
+        Si quieres, abre tu app de comida a domicilio (Rappi, Uber Eats, DiDi Food…) y revisa tu
+        historial. Para cada pedido, elige por qué lo hiciste y cuánto pagaste.
+      </p>
       <BaselineForm />
       <DemoLabel className="pb-6" />
     </main>

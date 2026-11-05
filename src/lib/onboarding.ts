@@ -15,8 +15,9 @@ export async function hasBaseline(supabase: Awaited<ReturnType<typeof requireCon
   return (count ?? 0) > 0;
 }
 
+/** La línea base es opcional: basta con haberla llenado o haberla saltado (baseline_done con orders 0). */
 export async function requireBaseline() {
   const ctx = await requireElcsa();
-  if (!(await hasBaseline(ctx.supabase))) redirect("/linea-base");
+  if (!(await hasEvent(ctx.supabase, "baseline_done")) && !(await hasBaseline(ctx.supabase))) redirect("/linea-base");
   return ctx;
 }

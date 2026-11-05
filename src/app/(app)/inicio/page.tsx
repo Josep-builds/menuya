@@ -35,6 +35,12 @@ export default async function InicioPage() {
         </div>
       </header>
 
+      {!t.hasBaseline && (
+        <Link href="/linea-base" className="rounded-xl bg-white px-3 py-2 text-sm text-brand ring-1 ring-brand/40">
+          Completa tu línea base →
+        </Link>
+      )}
+
       {!t.finished && !t.loggedToday && (
         <div className="rounded-2xl bg-amber-100 p-4 text-amber-900">
           <p className="font-semibold">Registrar hoy</p>

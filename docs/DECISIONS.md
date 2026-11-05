@@ -173,3 +173,17 @@ Consequences / how we work with it:
 - `/ahorro` shows "Semana 2 vs. semana 1" once 7 days are compared (it used to say "Primeros 7 días…").
 - 2026-11-04: screenshots taken; cleanup ran. Founder account has 0 baseline, 0 waste, 0 impulse rows (back to `/linea-base`); profile and consent kept. The events from the screenshot session are still there (`log_added` 1, `saving_viewed` 3, `pay_link_clicked` 1, `elcsa_completed` 2, plus `signed_in`/`consent_given`). Exclude the founder account when counting real-user metrics.
 - 2026-11-04: on owner's request, all `menuya_events` rows of the founder account were deleted too (0 left, 0 in the whole table). Profile + consent kept. Since `elcsa_completed` is gone, the founder account goes through `/preguntas` again before `/linea-base`. Metrics no longer need to exclude past founder test events.
+
+## 2026-11-05 · Fix del persona test: línea base más corta y opcional
+
+- **Hallazgo (persona test, 11B):** la confusión más grave fue `/linea-base`. Llenar 10 pedidos se sentía como tarea, sin saber para qué ni poder saltarla.
+- **Cambio de protocolo:** la línea base pasa de **10 pedidos obligatorios** a **mínimo 0 / sugeridos 3 / máximo 10**.
+- **Pantalla:**
+  - Arriba dice para qué sirve: "Esto nos deja comparar después cuánto ahorraste. Pon solo los que recuerdes."
+  - Muestra 3 renglones; "+ Agregar otro" agrega uno más, hasta 10.
+  - Botón secundario "Saltar por ahora", que lleva a `/inicio`.
+- **Inicio:** muestra el aviso "Completa tu línea base →" hasta que haya al menos un pedido guardado.
+- **Validación:** igual con zod (`baselineSchema`, 1–10 filas con etiqueta válida y monto válido). Guardar con 0 filas da el error "Llena al menos un pedido, o toca «Saltar por ahora»". "Mínimo 0" se cumple con el botón de saltar, no guardando un formulario vacío.
+- **Día 1 de la prueba:** ahora es la fecha del primer `baseline_done` (al guardar o al saltar) o del primer pedido de línea base, la que sea más antigua. Saltar registra `baseline_done` con `orders: 0`.
+- **Migración 006** (`db/migrations/006_menuya_baseline_skip.sql`): el check `menuya_events_props_allowed` acepta `orders` 0–10. Solo toca `menuya_events`; mapa-tandeo no se tocó. El zod de `src/lib/events.ts` cambió igual (0–10).
+- **Efecto en el análisis:** quien salta no tiene línea base. Ese usuario no ve la tarjeta de alcohol/tabaco, y el ahorro (semana 1 vs. semana 2) no depende de la línea base, así que no cambia. En métricas, contar `baseline_done` con `orders = 0` como "saltó".

@@ -20,7 +20,7 @@ const eventSchema = z.object({
     .strictObject({
       type: z.enum(["waste", "impulse", "nothing"]).optional(),
       week: z.union([z.literal(1), z.literal(2)]).optional(),
-      orders: z.number().int().min(1).max(10).optional(),
+      orders: z.number().int().min(0).max(10).optional(), // 0 = saltó la línea base
     })
     .default({}),
 });

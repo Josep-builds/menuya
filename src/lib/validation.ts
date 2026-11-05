@@ -38,10 +38,14 @@ export const baselineOrderSchema = z.object({
   label: z.enum(BASELINE_LABELS, { error: "Elige por qué hiciste ese pedido." }),
   amount_mxn: amountSchema,
 });
+/** Renglones sugeridos al abrir la pantalla y máximo permitido (persona test: 10 → mínimo 0 / sugeridos 3). */
+export const BASELINE_SUGGESTED = 3;
+export const BASELINE_MAX = 10;
+
 export const baselineSchema = z
   .array(baselineOrderSchema)
-  .min(1, { error: "Etiqueta al menos un pedido." })
-  .max(10, { error: "Máximo 10 pedidos." });
+  .min(1, { error: "Llena al menos un pedido, o toca «Saltar por ahora»." })
+  .max(BASELINE_MAX, { error: "Máximo 10 pedidos." });
 
 export const IMPULSE_KINDS = ["delivery", "oxxo", "otro"] as const;
 export const IMPULSE_KIND_TEXT: Record<(typeof IMPULSE_KINDS)[number], string> = {

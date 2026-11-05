@@ -64,9 +64,9 @@ test("11A.4: ELCSA no usa red ni almacenamiento; la acción del servidor no reci
 });
 
 test("11A.7: cada evento tiene exactamente un punto de escritura por acción", () => {
-  const calls = SRC.flatMap((f) => [...read(f).matchAll(/logEvent\(supabase, "([a-z_]+)"(?:, \{ type: "([a-z]+)")?/g)].map((m) => `${m[1]}${m[2] ? ":" + m[2] : ""}`));
+  const calls = SRC.flatMap((f) => [...read(f).matchAll(/logEvent\(supabase, "([a-z_]+)"(?:, \{ (?:type: "([a-z]+)"|orders: (0)))?/g)].map((m) => `${m[1]}${m[2] ? ":" + m[2] : ""}${m[3] ? ":skip" : ""}`));
   const count = (k: string) => calls.filter((c) => c === k).length;
-  for (const k of ["signed_in", "consent_given", "elcsa_completed", "baseline_done", "log_added:waste", "log_added:impulse", "log_added:nothing", "saving_viewed", "pay_link_clicked"]) {
+  for (const k of ["signed_in", "consent_given", "elcsa_completed", "baseline_done", "baseline_done:skip", "log_added:waste", "log_added:impulse", "log_added:nothing", "saving_viewed", "pay_link_clicked"]) {
     assert.equal(count(k), 1, k);
   }
 });
