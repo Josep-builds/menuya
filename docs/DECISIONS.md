@@ -187,3 +187,21 @@ Consequences / how we work with it:
 - **Día 1 de la prueba:** ahora es la fecha del primer `baseline_done` (al guardar o al saltar) o del primer pedido de línea base, la que sea más antigua. Saltar registra `baseline_done` con `orders: 0`.
 - **Migración 006** (`db/migrations/006_menuya_baseline_skip.sql`): el check `menuya_events_props_allowed` acepta `orders` 0–10. Solo toca `menuya_events`; mapa-tandeo no se tocó. El zod de `src/lib/events.ts` cambió igual (0–10).
 - **Efecto en el análisis:** quien salta no tiene línea base. Ese usuario no ve la tarjeta de alcohol/tabaco, y el ahorro (semana 1 vs. semana 2) no depende de la línea base, así que no cambia. En métricas, contar `baseline_done` con `orders = 0` como "saltó".
+
+## 2026-11-08 · Session Close
+
+**Hecho esta sesión**
+- Fix del persona test en `/linea-base` (commit `d631420`, ya en menuyamx.xyz): explica para qué sirve, abre con 3 renglones y "+ Agregar otro" (hasta 10), y tiene "Saltar por ahora". El inicio muestra "Completa tu línea base →" hasta que haya al menos un pedido. Migración 006 aplicada (`orders` 0–10). Pasan 21/21 pruebas unitarias y 33/33 del smoke test.
+- Exportamos la conversación de construcción de la semana a `docs/BUILDCHAT_josepferre.pdf`: completa y en orden, desde mover PACKET a `docs/` hasta el fix de línea base. Incluye mensajes, comandos y resultados; no incluye el razonamiento interno del modelo. Revisamos que no tuviera llaves ni tokens: no apareció ninguno real (solo se tapó una plantilla de `.env` como `[REDACTADO]`).
+
+**Pendiente**
+- Captura "después" de `/linea-base` (dueño). Tu cuenta vuelve a pasar por las 8 preguntas antes de llegar ahí.
+- Pruebas manuales: ELCSA viendo la pestaña Network de DevTools; casos moderado/severo de principio a fin; con datos móviles; con una segunda cuenta real de Google.
+- Poner la liga real de Mercado Pago en `NEXT_PUBLIC_PAY_LINK`.
+- Confirmar la interpretación de "sin precio" en Mi lista.
+- Configurar `www.menuyamx.xyz`.
+- peldano-venture sigue sin reactivar.
+- Riesgo conocido: las políticas de mapa-tandeo se corrigen después de que califiquen la semana 11.
+
+**Primer paso de la próxima sesión**
+- Entrar a menuyamx.xyz con la cuenta del fundador, pasar ELCSA, sacar la captura "después" de `/linea-base` y probar "Saltar por ahora" → aviso en el inicio → llenar 1 pedido → el aviso desaparece.
