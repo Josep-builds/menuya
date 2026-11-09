@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-// Página provisional: antes era el destino del botón de pago. Hoy no hay checkout real.
+// Destino provisional de NEXT_PUBLIC_PAY_LINK hasta que exista el enlace de Mercado Pago.
 export default function PagoPendientePage() {
   return (
     <main className="flex flex-1 flex-col justify-center gap-4 py-12 text-center">
@@ -9,11 +9,8 @@ export default function PagoPendientePage() {
         Gracias por querer apoyar a MenúYA. En esta versión de prueba el pago todavía no está
         disponible, y no se te cobró nada.
       </p>
-      <p className="text-neutral-700">
-        MenúYA Student costará $49 MXN al mes cuando abramos. Hoy no cobramos.
-      </p>
-      <Link href="/pricing" className="text-brand underline">
-        Ver planes
+      <Link href="/inicio" className="text-brand underline">
+        Volver
       </Link>
     </main>
   );

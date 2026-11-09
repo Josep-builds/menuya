@@ -43,25 +43,11 @@ function walk(dir: string): string[] {
 const SRC = walk("src").filter((f) => /\.(ts|tsx)$/.test(f));
 const read = (f: string) => readFileSync(f, "utf8");
 
-// Semana 14: el precio viejo ($149 por semestre) desaparece de la app. Solo se busca en src/;
-// docs/ guarda la historia y no se revisa aquí.
-test("11A.5: ya no queda el precio viejo $149 en src/", () => {
+test("11A.5: el precio $149 y el enlace de pago solo existen en PayButton", () => {
   const withPrice = SRC.filter((f) => /\$149|149 por semestre/.test(read(f)));
-  assert.deepEqual(withPrice, []);
-});
-
-test("11A.5: PayButton dice «Ver planes», lleva a /pricing y sigue protegido por ELCSA", () => {
-  const code = read("src/components/PayButton.tsx");
-  assert.match(code, /href="\/pricing"/);
-  assert.match(code, /Ver planes/);
-  assert.match(code, /payButtonMode\(level\)/);
-  assert.match(code, /if \(mode !== "show"\) return null;/);
-  assert.doesNotMatch(code, /\$\s?\d/); // el botón no muestra ningún precio
-});
-
-test("no hay checkout real: nadie usa NEXT_PUBLIC_PAY_LINK ni pide datos de tarjeta", () => {
-  assert.deepEqual(SRC.filter((f) => read(f).includes("NEXT_PUBLIC_PAY_LINK")), []);
-  assert.deepEqual(SRC.filter((f) => /tarjeta de cr[eé]dito|card-?number|cc-number|cvv/i.test(read(f))), []);
+  assert.deepEqual(withPrice, ["src/components/PayButton.tsx"]);
+  const withLink = SRC.filter((f) => read(f).includes("NEXT_PUBLIC_PAY_LINK") && !f.endsWith("pago-pendiente/page.tsx"));
+  assert.deepEqual(withLink, ["src/components/PayButton.tsx"]);
 });
 
 test("11A.5: la pantalla de comedores no muestra precios", () => {

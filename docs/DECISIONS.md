@@ -210,8 +210,8 @@ Consequences / how we work with it:
 
 - **Rama aparte:** la Semana 13 aún no está calificada, así que menuyamx.xyz (producción, rama `main`) no cambia. Todo lo de la Semana 14 vive en la rama `semana-14` y se revisa en su URL de preview de Vercel. Se mezcla a `main` solo cuando el dueño lo diga.
 - **Páginas públicas nuevas** (sin login ni base de datos, agregadas a `PUBLIC_PATHS` en `src/proxy.ts`): `/pricing` (Free $0 / Student $49 MXN al mes, "¿Para quién es?", simulador, límites) y `/about` (memo 10:1: un pedido de $610.11 vs. ~$60 de comida planeada → ≈ 11:1 contra $49).
-- **Precio viejo retirado:** el botón "Apoyar MenúYA · $149 por semestre" ahora dice "Ver planes" y lleva a `/pricing`, sin precio. Sigue protegido por `useCanShowPay()` (oculto para moderada/severa) y registra el mismo evento `pay_link_clicked`, así que no hubo migración ni cambios en Supabase. `/pago-pendiente` se quedó: dice "$49 MXN al mes cuando abramos. Hoy no cobramos" y enlaza a `/pricing`.
-- **No cobramos:** "Apartar mi lugar" lleva a una lista de espera externa; no hay checkout ni datos de tarjeta. `NEXT_PUBLIC_PAY_LINK` ya no se usa en el código; la variable sigue en Vercel sin tocar.
+- **Precio viejo (actualizado el mismo día):** el cambio del botón "$149 por semestre" → "Ver planes", el nuevo texto de `/pago-pendiente` y la prueba 11A.5 nueva se movieron a la rama `post-semana-13`, que se aplica después de calificar la Semana 13. En `semana-14` esos 3 archivos quedan idénticos a `main` (`2f61acb`). Mientras tanto, $149 (en `/ahorro`) y $49 (en `/pricing`) conviven.
+- **No cobramos:** no hay checkout ni datos de tarjeta. `NEXT_PUBLIC_PAY_LINK` sigue igual que en `main`.
 - **Simulador** (`src/lib/pricing.ts`, con pruebas en `tests/pricing.test.ts`):
   - Usuarios que pagan = free × conversión × (1 − haircut), redondeado hacia abajo.
   - Comisión = (% × precio + fijo) × 1.16 (IVA sobre la comisión). El procesador no está decidido.
@@ -219,7 +219,7 @@ Consequences / how we work with it:
   - A $49: neto $43.47, equilibrio v1 ($480) = 12, v2 ($1,179) = **28** (no 27: con 27 faltan ~$5), meta $9,343 = 215.
   - El ingreso no depende de cuánto gasta el usuario.
 - **Precios frescos:** `docs/precios-frescos-2026-11-09.md`. Vistos en walmart.com.mx sin elegir sucursal; la revisión a mano en Santa Fe sigue pendiente. Se guardan con rango de ±15%.
-- La prueba 11A.5 ahora exige que no quede "$149" en `src/` (en `docs/` se queda como historia).
+- La prueba 11A.5 que busca "$149" solo en `src/` está en `post-semana-13`; en `semana-14` sigue la original de `main`.
 
 **URL de entrega y Deployment Protection (2026-11-09)**
 - URL de entrega de la Semana 14: **https://semana14.menuyamx.xyz/pricing** (y `/about`). Es un dominio de Vercel DNS ligado a la rama `semana-14`; cada push a esa rama lo actualiza. Producción (menuyamx.xyz, `main`, commit `2f61acb`) no cambió.
