@@ -220,3 +220,9 @@ Consequences / how we work with it:
   - El ingreso no depende de cuánto gasta el usuario.
 - **Precios frescos:** `docs/precios-frescos-2026-11-09.md`. Vistos en walmart.com.mx sin elegir sucursal; la revisión a mano en Santa Fe sigue pendiente. Se guardan con rango de ±15%.
 - La prueba 11A.5 ahora exige que no quede "$149" en `src/` (en `docs/` se queda como historia).
+
+**URL de entrega y Deployment Protection (2026-11-09)**
+- URL de entrega de la Semana 14: **https://semana14.menuyamx.xyz/pricing** (y `/about`). Es un dominio de Vercel DNS ligado a la rama `semana-14`; cada push a esa rama lo actualiza. Producción (menuyamx.xyz, `main`, commit `2f61acb`) no cambió.
+- **Vercel Authentication se apagó el 9 nov 2026 en el proyecto `menuya`** (solo este proyecto) para que el profe abra la entrega de la Semana 14 sin cuenta de Vercel. Antes estaba en "Standard Protection" (`all_except_custom_domains`), que también protege los dominios propios de ramas que no son producción. Por eso un subdominio solo no bastó.
+- Mientras esté apagada, todos los previews de `menuya` son públicos. El riesgo es bajo: es el mismo código que ya es público en producción, y los datos siguen protegidos por RLS.
+- **Se puede volver a prender después de la calificación:** Vercel → menuya → Settings → Deployment Protection → Vercel Authentication → Standard Protection. Al prenderla, semana14.menuyamx.xyz vuelve a pedir login.
