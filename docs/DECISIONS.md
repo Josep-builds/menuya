@@ -226,3 +226,42 @@ Consequences / how we work with it:
 - **Vercel Authentication se apagó el 9 nov 2026 en el proyecto `menuya`** (solo este proyecto) para que el profe abra la entrega de la Semana 14 sin cuenta de Vercel. Antes estaba en "Standard Protection" (`all_except_custom_domains`), que también protege los dominios propios de ramas que no son producción. Por eso un subdominio solo no bastó.
 - Mientras esté apagada, todos los previews de `menuya` son públicos. El riesgo es bajo: es el mismo código que ya es público en producción, y los datos siguen protegidos por RLS.
 - **Se puede volver a prender después de la calificación:** Vercel → menuya → Settings → Deployment Protection → Vercel Authentication → Standard Protection. Al prenderla, semana14.menuyamx.xyz vuelve a pedir login.
+
+## 2026-11-09 · Session Close (Semana 14)
+
+**Cambio de plan:** la Semana 14 se entrega en menuyamx.xyz, pero la Semana 13 no está calificada. Por eso `semana-14` **solo agrega** cosas: páginas nuevas, `src/proxy.ts` y `docs/`. No se mezcla a `main` hasta que el dueño lo diga.
+
+**Hecho hoy (rama `semana-14`)**
+- `/pricing` (pública):
+  - Promesa, Free $0 / Student $49 MXN al mes, "¿Para quién es?" y límites.
+  - La tarjeta de papás dice quién paga: "el papá o la mamá · $69 MXN/mes (hipótesis, aún no a la venta)".
+  - "Apartar mi lugar" lleva a `/apartar`.
+- **Simulador:**
+  - Escenarios Conservador / Base / Optimista.
+  - "Guardar escenario" en localStorage (solo números y un nombre automático, con try/catch, máximo 10), con lista para cargar y borrar.
+  - Cada campo tiene mínimo, máximo, decimales y largo máximo (9 caracteres). Un valor fuera de rango se corrige y muestra aviso.
+  - Las cuentas a $49 cuadran: neto $43.47, equilibrio v1 = 12, v2 = 28, meta = 215.
+- `/apartar` (pública):
+  - Student $49 al mes, o $69 con `?p=69`.
+  - "Apartar mi lugar para diciembre" muestra el aviso "Todavía no cobramos. No se te cargó nada. Estamos midiendo interés."
+  - Luego hay un botón a WhatsApp (+52 55 4502 2101) con el mensaje armado. No hay tarjeta, datos bancarios ni base de datos.
+- `/about`: memo 10:1. El costo está en dinero, tiempo y riesgo.
+- `docs/precios-frescos-2026-11-09.md` y `docs/TESTS.md` (pasada mecánica con 3 bugs corregidos).
+- Pruebas: 49/49 (`npm test`).
+- **Entrega:** https://semana14.menuyamx.xyz/pricing (`/about`, `/apartar`). Es el subdominio ligado a `semana-14`, y Vercel Authentication está apagada en el proyecto `menuya` (ver arriba).
+
+**$149 y $49 conviven temporalmente**
+- Hasta que califiquen la Semana 13, `/ahorro` sigue mostrando "Apoyar MenúYA · $149 por semestre" (igual que en `main`), y `/pricing` dice $49 al mes.
+- El cambio que los une está guardado en la rama local `post-semana-13`:
+  - El botón cambia a "Ver planes" → `/pricing`.
+  - `/pago-pendiente` se alinea a $49 al mes.
+  - La prueba 11A.5 busca "$149" solo en `src/`.
+- Se aplica después de la calificación.
+
+**Pendiente**
+- Mezclar `semana-14` a `main` (producción) cuando el dueño lo diga. Después, aplicar `post-semana-13`.
+- Volver a prender Vercel Authentication después de la calificación.
+- Revisión a mano de los precios en el Walmart de Santa Fe.
+- Agregar `/pricing`, `/about` y `/apartar` a `tests/smoke.sh` cuando lleguen a producción.
+
+**Primer paso de mañana:** persona test + conversación de precio real.
