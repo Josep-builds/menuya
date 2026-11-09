@@ -73,6 +73,9 @@ export default function PricingPage() {
               Lista de espera · v2
             </span>
             <p className="mt-2 font-semibold">Papás que pagan por su hijo</p>
+            <p className="mt-1 text-sm text-neutral-600">
+              Paga: el papá o la mamá · $69 MXN/mes (hipótesis, aún no a la venta)
+            </p>
           </div>
         </div>
       </section>
