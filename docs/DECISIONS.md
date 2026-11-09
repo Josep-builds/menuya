@@ -205,3 +205,18 @@ Consequences / how we work with it:
 
 **Primer paso de la próxima sesión**
 - Entrar a menuyamx.xyz con la cuenta del fundador, pasar ELCSA, sacar la captura "después" de `/linea-base` y probar "Saltar por ahora" → aviso en el inicio → llenar 1 pedido → el aviso desaparece.
+
+## 2026-11-09 · Semana 14: Pricing (rama `semana-14`, no en producción)
+
+- **Rama aparte:** la Semana 13 aún no está calificada, así que menuyamx.xyz (producción, rama `main`) no cambia. Todo lo de la Semana 14 vive en la rama `semana-14` y se revisa en su URL de preview de Vercel. Se mezcla a `main` solo cuando el dueño lo diga.
+- **Páginas públicas nuevas** (sin login ni base de datos, agregadas a `PUBLIC_PATHS` en `src/proxy.ts`): `/pricing` (Free $0 / Student $49 MXN al mes, "¿Para quién es?", simulador, límites) y `/about` (memo 10:1: un pedido de $610.11 vs. ~$60 de comida planeada → ≈ 11:1 contra $49).
+- **Precio viejo retirado:** el botón "Apoyar MenúYA · $149 por semestre" ahora dice "Ver planes" y lleva a `/pricing`, sin precio. Sigue protegido por `useCanShowPay()` (oculto para moderada/severa) y registra el mismo evento `pay_link_clicked`, así que no hubo migración ni cambios en Supabase. `/pago-pendiente` se quedó: dice "$49 MXN al mes cuando abramos. Hoy no cobramos" y enlaza a `/pricing`.
+- **No cobramos:** "Apartar mi lugar" lleva a una lista de espera externa; no hay checkout ni datos de tarjeta. `NEXT_PUBLIC_PAY_LINK` ya no se usa en el código; la variable sigue en Vercel sin tocar.
+- **Simulador** (`src/lib/pricing.ts`, con pruebas en `tests/pricing.test.ts`):
+  - Usuarios que pagan = free × conversión × (1 − haircut), redondeado hacia abajo.
+  - Comisión = (% × precio + fijo) × 1.16 (IVA sobre la comisión). El procesador no está decidido.
+  - Los usuarios necesarios siempre se redondean hacia arriba.
+  - A $49: neto $43.47, equilibrio v1 ($480) = 12, v2 ($1,179) = **28** (no 27: con 27 faltan ~$5), meta $9,343 = 215.
+  - El ingreso no depende de cuánto gasta el usuario.
+- **Precios frescos:** `docs/precios-frescos-2026-11-09.md`. Vistos en walmart.com.mx sin elegir sucursal; la revisión a mano en Santa Fe sigue pendiente. Se guardan con rango de ±15%.
+- La prueba 11A.5 ahora exige que no quede "$149" en `src/` (en `docs/` se queda como historia).

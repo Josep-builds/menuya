@@ -5,12 +5,11 @@ import { useElcsa } from "./ElcsaProvider";
 import { payButtonMode } from "@/lib/elcsa";
 import { trackPayLinkClicked } from "@/lib/event-actions";
 
-const PAY_LINK = process.env.NEXT_PUBLIC_PAY_LINK ?? "";
-
 /**
- * Botón de pago. Solo aparece si en ESTA pestaña ELCSA salió seguridad o leve.
- * - Moderada/severa en esta sesión: no se muestra nada (ni precio, ni botón, ni pista).
+ * Botón "Ver planes" → /pricing. Solo aparece si en ESTA pestaña ELCSA salió seguridad o leve.
+ * - Moderada/severa en esta sesión: no se muestra nada (ni botón, ni pista).
  * - Sin resultado en memoria (recargó / volvió otro día): se invita a contestar de nuevo.
+ * El botón no muestra precio y no cobra: solo lleva a la página de planes.
  */
 export function PayButton() {
   const { level } = useElcsa();
@@ -23,17 +22,15 @@ export function PayButton() {
       </Link>
     );
   }
-  if (mode !== "show" || !PAY_LINK) return null;
+  if (mode !== "show") return null;
 
   return (
-    <a
-      href={PAY_LINK}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      href="/pricing"
       onClick={() => void trackPayLinkClicked()}
       className="block w-full rounded-2xl bg-brand px-4 py-4 text-center font-semibold text-white hover:bg-brand-dark"
     >
-      Apoyar MenúYA · $149 por semestre, sin renovación automática
-    </a>
+      Ver planes
+    </Link>
   );
 }
