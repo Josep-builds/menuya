@@ -53,16 +53,65 @@ export function leerNumero(v: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-const clamp = (n: number, min: number, max: number) => Math.min(Math.max(n, min), max);
+// --- Validación (security floor): cada campo tiene mínimo, máximo, decimales y largo máximo ---
+
+export type Limite = { etiqueta: string; min: number; max: number; decimales: number; unidad?: "%" | "$" };
+
+/** Largo máximo de texto en cualquier campo del simulador. */
+export const MAX_CARACTERES = 9;
+
+export const LIMITES: Record<Campo, Limite> = {
+  usuariosFree: { etiqueta: "Usuarios free", min: 0, max: 10000, decimales: 0 },
+  conversion: { etiqueta: "Conversión", min: 0, max: 100, decimales: 2, unidad: "%" },
+  haircut: { etiqueta: "Haircut", min: 0, max: 100, decimales: 2, unidad: "%" },
+  pct: { etiqueta: "Comisión %", min: 0, max: 20, decimales: 2, unidad: "%" },
+  fijo: { etiqueta: "Comisión fija", min: 0, max: 50, decimales: 2, unidad: "$" },
+  iva: { etiqueta: "IVA", min: 0, max: 30, decimales: 2, unidad: "%" },
+  horasV1: { etiqueta: "Horas", min: 0, max: 200, decimales: 1 },
+  tarifaHoraV1: { etiqueta: "Pago por hora", min: 0, max: 2000, decimales: 2, unidad: "$" },
+  cupoV1: { etiqueta: "Cupo", min: 1, max: 1000, decimales: 0 },
+  proveedorWhatsAppV2: { etiqueta: "Proveedor WhatsApp", min: 0, max: 50000, decimales: 2, unidad: "$" },
+  metaMensual: { etiqueta: "Meta mensual", min: 0, max: 1000000, decimales: 2, unidad: "$" },
+};
+
+export type Validado = { valor: number; aviso: string | null };
+
+const fmt = (n: number, l: Limite) =>
+  l.unidad === "$" ? `$${n.toLocaleString("es-MX")}` : `${n.toLocaleString("es-MX")}${l.unidad === "%" ? "%" : ""}`;
+
+/** Convierte el texto de un campo en un número dentro de su rango. Si tuvo que corregir, dice por qué. */
+export function validarCampo(campo: Campo, texto: string): Validado {
+  const l = LIMITES[campo];
+  const limpio = texto.slice(0, MAX_CARACTERES).replace(/[$,\s%]/g, "");
+  if (texto.length > MAX_CARACTERES) {
+    const n = Number(limpio);
+    const valor = Number.isFinite(n) ? Math.min(Math.max(n, l.min), l.max) : l.min;
+    return { valor, aviso: `${l.etiqueta}: máximo ${MAX_CARACTERES} caracteres. Usamos ${fmt(valor, l)}.` };
+  }
+  if (limpio === "") return { valor: l.min, aviso: `${l.etiqueta}: está vacío. Usamos ${fmt(l.min, l)}.` };
+  const n = Number(limpio);
+  if (!Number.isFinite(n) || !/^-?\d*\.?\d*$/.test(limpio)) {
+    return { valor: l.min, aviso: `${l.etiqueta}: no es un número. Usamos ${fmt(l.min, l)}.` };
+  }
+  if (n < l.min) return { valor: l.min, aviso: `${l.etiqueta}: el mínimo es ${fmt(l.min, l)}. Lo ajustamos.` };
+  if (n > l.max) return { valor: l.max, aviso: `${l.etiqueta}: el máximo es ${fmt(l.max, l)}. Lo ajustamos.` };
+  const f = 10 ** l.decimales;
+  const redondeado = Math.round(n * f) / f;
+  if (redondeado !== n) {
+    const txt = l.decimales === 0 ? "sin decimales" : `con ${l.decimales} decimal${l.decimales > 1 ? "es" : ""}`;
+    return { valor: redondeado, aviso: `${l.etiqueta}: va ${txt}. Usamos ${fmt(redondeado, l)}.` };
+  }
+  return { valor: n, aviso: null };
+}
 
 export function aSupuestos(c: Campos, precio: number): Supuestos {
-  const n = (k: Campo, max = Infinity) => clamp(leerNumero(c[k]), 0, max);
+  const n = (k: Campo) => validarCampo(k, c[k]).valor;
   return {
-    usuariosFree: n("usuariosFree", 10000),
-    conversion: n("conversion", 100) / 100,
+    usuariosFree: n("usuariosFree"),
+    conversion: n("conversion") / 100,
     precio,
-    haircut: n("haircut", 100) / 100,
-    comision: { pct: n("pct", 100) / 100, fijo: n("fijo"), iva: n("iva", 100) / 100 },
+    haircut: n("haircut") / 100,
+    comision: { pct: n("pct") / 100, fijo: n("fijo"), iva: n("iva") / 100 },
     horasV1: n("horasV1"),
     tarifaHoraV1: n("tarifaHoraV1"),
     cupoV1: n("cupoV1"),
@@ -107,10 +156,11 @@ export function parseGuardados(raw: string | null): Escenario[] {
     if (!campos || typeof campos !== "object") continue;
     const c = campos as Record<string, unknown>;
     if (!CAMPOS.every((k) => typeof c[k] === "string" && VALOR_GUARDADO.test(c[k] as string))) continue;
+    // Aunque tenga la forma correcta, cada valor vuelve a pasar por sus límites.
     out.push({
       nombre,
       precio: precio as Precio,
-      campos: Object.fromEntries(CAMPOS.map((k) => [k, c[k] as string])) as Campos,
+      campos: Object.fromEntries(CAMPOS.map((k) => [k, String(validarCampo(k, c[k] as string).valor)])) as Campos,
     });
   }
   return out;
@@ -122,7 +172,7 @@ export function serializarGuardados(lista: readonly Escenario[]): string {
     lista.slice(0, MAX_GUARDADOS).map((e) => ({
       nombre: e.nombre,
       precio: e.precio,
-      campos: Object.fromEntries(CAMPOS.map((k) => [k, String(leerNumero(e.campos[k]))])),
+      campos: Object.fromEntries(CAMPOS.map((k) => [k, String(validarCampo(k, e.campos[k]).valor)])),
     })),
   );
 }

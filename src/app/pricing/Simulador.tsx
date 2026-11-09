@@ -5,10 +5,13 @@ import { PRECIOS, simular } from "@/lib/pricing";
 import {
   CAMPOS_BASE,
   ESCENARIOS_PREDEFINIDOS,
+  LIMITES,
+  MAX_CARACTERES,
   MAX_GUARDADOS,
   STORAGE_KEY,
   aSupuestos,
   nombreNuevo,
+  validarCampo,
   parseGuardados,
   serializarGuardados,
   type Campo,
@@ -51,12 +54,14 @@ function escribirStorage(lista: Escenario[]): boolean {
 }
 
 function CampoNum({
+  campo,
   label,
   value,
   onChange,
   pre,
   suf,
 }: {
+  campo: Campo;
   label: string;
   value: string;
   onChange: (v: string) => void;
@@ -64,22 +69,52 @@ function CampoNum({
   suf?: string;
 }) {
   const id = useId();
+  const { min, max } = LIMITES[campo];
+  // Aviso de la última corrección; se borra en cuanto la persona vuelve a escribir.
+  const [corregido, setCorregido] = useState<string | null>(null);
+  const enVivo = validarCampo(campo, value);
+  const aviso = enVivo.aviso ?? corregido;
   return (
     <div>
       <label htmlFor={id} className="block text-sm font-medium text-neutral-800">
         {label}
       </label>
-      <div className="mt-1 flex items-center rounded-xl border border-neutral-300 bg-white px-3 focus-within:border-brand">
+      <div
+        className={`mt-1 flex items-center rounded-xl border bg-white px-3 focus-within:border-brand ${
+          enVivo.aviso ? "border-amber-500" : "border-neutral-300"
+        }`}
+      >
         {pre && <span className="text-neutral-500">{pre}</span>}
         <input
           id={id}
           inputMode="decimal"
+          maxLength={MAX_CARACTERES}
+          aria-invalid={enVivo.aviso ? true : undefined}
+          aria-describedby={aviso ? `${id}-aviso` : `${id}-rango`}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => {
+            setCorregido(null);
+            onChange(e.target.value);
+          }}
+          onBlur={() => {
+            if (enVivo.aviso) {
+              setCorregido(enVivo.aviso);
+              onChange(String(enVivo.valor));
+            }
+          }}
           className="w-full min-w-0 bg-transparent py-2 text-base outline-none"
         />
         {suf && <span className="text-neutral-500">{suf}</span>}
       </div>
+      {aviso ? (
+        <p id={`${id}-aviso`} role="status" className="mt-1 text-xs text-amber-800">
+          {aviso}
+        </p>
+      ) : (
+        <p id={`${id}-rango`} className="mt-1 text-xs text-neutral-400">
+          {min.toLocaleString("es-MX")}–{max.toLocaleString("es-MX")}
+        </p>
+      )}
     </div>
   );
 }
@@ -225,8 +260,8 @@ export function Simulador() {
         </div>
 
         <div className="grid grid-cols-2 items-end gap-3">
-          <CampoNum label="Conversión free → paid" value={c.conversion} onChange={set("conversion")} suf="%" />
-          <CampoNum label="Haircut «dijo vs pagó»" value={c.haircut} onChange={set("haircut")} suf="%" />
+          <CampoNum campo="conversion" label="Conversión free → paid" value={c.conversion} onChange={set("conversion")} suf="%" />
+          <CampoNum campo="haircut" label="Haircut «dijo vs pagó»" value={c.haircut} onChange={set("haircut")} suf="%" />
         </div>
         <p className="-mt-2 text-xs text-neutral-500">
           Haircut: de los que dicen que sí pagarían, qué parte al final no paga.
@@ -260,9 +295,9 @@ export function Simulador() {
         <legend className="px-1 text-sm font-semibold uppercase tracking-wide text-brand">Comisión del procesador</legend>
         <p className="text-xs text-neutral-500">Procesador todavía no decidido. Comisión = (% × precio + fijo) + IVA sobre la comisión.</p>
         <div className="grid grid-cols-3 items-end gap-3">
-          <CampoNum label="%" value={c.pct} onChange={set("pct")} suf="%" />
-          <CampoNum label="Fijo" value={c.fijo} onChange={set("fijo")} pre="$" />
-          <CampoNum label="IVA" value={c.iva} onChange={set("iva")} suf="%" />
+          <CampoNum campo="pct" label="%" value={c.pct} onChange={set("pct")} suf="%" />
+          <CampoNum campo="fijo" label="Fijo" value={c.fijo} onChange={set("fijo")} pre="$" />
+          <CampoNum campo="iva" label="IVA" value={c.iva} onChange={set("iva")} suf="%" />
         </div>
       </fieldset>
 
@@ -273,14 +308,14 @@ export function Simulador() {
           <span className="font-normal text-neutral-500">· cupo {num(s.cupoV1)} usuarios</span>
         </p>
         <div className="grid grid-cols-3 items-end gap-3">
-          <CampoNum label="Horas" value={c.horasV1} onChange={set("horasV1")} suf="h" />
-          <CampoNum label="Por hora" value={c.tarifaHoraV1} onChange={set("tarifaHoraV1")} pre="$" />
-          <CampoNum label="Cupo" value={c.cupoV1} onChange={set("cupoV1")} />
+          <CampoNum campo="horasV1" label="Horas" value={c.horasV1} onChange={set("horasV1")} suf="h" />
+          <CampoNum campo="tarifaHoraV1" label="Por hora" value={c.tarifaHoraV1} onChange={set("tarifaHoraV1")} pre="$" />
+          <CampoNum campo="cupoV1" label="Cupo" value={c.cupoV1} onChange={set("cupoV1")} />
         </div>
         <p className="mt-2 text-sm font-medium">v2: {peso(r.costoV2)}/mes</p>
         <div className="grid grid-cols-2 items-end gap-3">
-          <CampoNum label="+ Proveedor WhatsApp" value={c.proveedorWhatsAppV2} onChange={set("proveedorWhatsAppV2")} pre="$" />
-          <CampoNum label="Meta mensual" value={c.metaMensual} onChange={set("metaMensual")} pre="$" />
+          <CampoNum campo="proveedorWhatsAppV2" label="+ Proveedor WhatsApp" value={c.proveedorWhatsAppV2} onChange={set("proveedorWhatsAppV2")} pre="$" />
+          <CampoNum campo="metaMensual" label="Meta mensual" value={c.metaMensual} onChange={set("metaMensual")} pre="$" />
         </div>
       </fieldset>
 
