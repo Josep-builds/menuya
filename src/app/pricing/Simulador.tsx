@@ -10,6 +10,7 @@ import {
   MAX_GUARDADOS,
   STORAGE_KEY,
   aSupuestos,
+  avisosResultado,
   nombreNuevo,
   validarCampo,
   parseGuardados,
@@ -342,16 +343,11 @@ export function Simulador() {
           {cuantos(r.meta.free)} usuarios free.
         </p>
 
-        {r.meta.pagando !== null && r.meta.pagando > s.cupoV1 && (
-          <p className="mt-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-900">
-            Ojo: v1 es manual y solo atiende {num(s.cupoV1)} usuarios. Llegar a {peso(s.metaMensual)}/mes necesita v2.
+        {avisosResultado(s).map((a) => (
+          <p key={a.id} data-aviso={a.id} className="mt-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-900">
+            {a.texto}
           </p>
-        )}
-        {!r.caben && (
-          <p className="mt-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-900">
-            Con {num(r.pagando)} usuarios que pagan ya no cabes en v1 (cupo {num(s.cupoV1)}).
-          </p>
-        )}
+        ))}
         <p className="mt-3 text-sm">
           Después de costos: v1 <b className="tabular-nums">{peso(r.resultadoV1)}</b> · v2{" "}
           <b className="tabular-nums">{peso(r.resultadoV2)}</b> al mes.

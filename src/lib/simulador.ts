@@ -2,7 +2,7 @@
 // Los escenarios guardados viven SOLO en el localStorage del navegador de quien los guarda.
 // No guardan datos personales: solo números y un nombre automático ("Mi escenario N").
 
-import { PRECIOS, SUPUESTOS_INICIALES as S0, type Supuestos } from "./pricing";
+import { PRECIOS, SUPUESTOS_INICIALES as S0, simular, type Supuestos } from "./pricing";
 
 export const CAMPOS = [
   "usuariosFree",
@@ -175,4 +175,52 @@ export function serializarGuardados(lista: readonly Escenario[]): string {
       campos: Object.fromEntries(CAMPOS.map((k) => [k, String(validarCampo(k, e.campos[k]).valor)])),
     })),
   );
+}
+
+// --- Avisos del resultado (plan de pruebas, PACKET §11) ---
+
+/** Abajo de este precio, la comisión fija ($3 + IVA) se come ~un tercio de cada cobro. */
+export const PRECIO_MINIMO_SANO = 15;
+
+export type AvisoResultado = {
+  id: "precio-bajo" | "equilibrio-v1-sobre-cupo" | "pagando-sobre-cupo" | "meta-necesita-v2";
+  texto: string;
+};
+
+const pesos = (n: number) => `$${Math.round(n).toLocaleString("es-MX")}`;
+const enteros = (n: number) => n.toLocaleString("es-MX");
+
+export function avisosResultado(s: Supuestos): AvisoResultado[] {
+  const r = simular(s);
+  const out: AvisoResultado[] = [];
+  if (s.precio < PRECIO_MINIMO_SANO) {
+    const parte = s.precio > 0 ? Math.round((r.comision / s.precio) * 100) : 100;
+    out.push({
+      id: "precio-bajo",
+      texto: `Con un precio menor a $${PRECIO_MINIMO_SANO}, la comisión fija se come ~un tercio (aquí, ${parte}% de cada cobro).`,
+    });
+  }
+  const eq = r.equilibrioV1.pagando;
+  if (eq === null || eq > s.cupoV1) {
+    out.push({
+      id: "equilibrio-v1-sobre-cupo",
+      texto:
+        eq === null
+          ? `v1 nunca llega al equilibrio: la comisión se come todo el precio.`
+          : `Para cubrir v1 (${pesos(r.costoV1)}/mes) se necesitan ${enteros(eq)} usuarios que pagan, más que el cupo de ${enteros(s.cupoV1)}. v1 no llega al equilibrio.`,
+    });
+  }
+  if (!r.caben) {
+    out.push({
+      id: "pagando-sobre-cupo",
+      texto: `Con ${enteros(r.pagando)} usuarios que pagan ya no cabes en v1 (cupo ${enteros(s.cupoV1)}).`,
+    });
+  }
+  if (r.meta.pagando !== null && r.meta.pagando > s.cupoV1) {
+    out.push({
+      id: "meta-necesita-v2",
+      texto: `Ojo: v1 es manual y solo atiende ${enteros(s.cupoV1)} usuarios. Llegar a ${pesos(s.metaMensual)}/mes necesita v2.`,
+    });
+  }
+  return out;
 }

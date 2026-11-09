@@ -12,7 +12,7 @@ import {
   serializarGuardados,
   type Escenario,
 } from "../src/lib/simulador";
-import { LIMITES, MAX_CARACTERES, validarCampo } from "../src/lib/simulador";
+import { LIMITES, MAX_CARACTERES, PRECIO_MINIMO_SANO, avisosResultado, validarCampo } from "../src/lib/simulador";
 
 const esc = (nombre: string): Escenario => ({ nombre, campos: CAMPOS_BASE, precio: 49 });
 
@@ -128,4 +128,46 @@ test("un escenario guardado con valores fuera de rango se carga ya corregido", (
   const [e] = parseGuardados(raw);
   assert.equal(e.campos.conversion, "100");
   assert.equal(e.campos.cupoV1, "1");
+});
+
+// --- Avisos del resultado (PACKET §11) ---
+const base = aSupuestos(CAMPOS_BASE, 49);
+const ids = (s: typeof base) => avisosResultado(s).map((a) => a.id);
+
+test("Base a $49: solo avisa que la meta de $9,343 necesita v2", () => {
+  assert.deepEqual(ids(base), ["meta-necesita-v2"]);
+});
+
+test("precio menor a $15 avisa que la comisión fija se come ~un tercio", () => {
+  assert.ok(ids({ ...base, precio: 10 }).includes("precio-bajo"));
+  assert.match(avisosResultado({ ...base, precio: 10 })[0].texto, /menor a \$15, la comisión fija se come ~un tercio \(aquí, 39% de cada cobro\)/);
+  assert.ok(!ids({ ...base, precio: PRECIO_MINIMO_SANO }).includes("precio-bajo"));
+  assert.ok(!ids({ ...base, precio: 49 }).includes("precio-bajo"));
+});
+
+test("avisa si el equilibrio de v1 necesita más usuarios que el cupo de 25", () => {
+  // 20 h × $120 = $2,400 → ⌈2400 / 43.47⌉ = 56 usuarios > 25
+  const caro = { ...base, horasV1: 20 };
+  assert.ok(ids(caro).includes("equilibrio-v1-sobre-cupo"));
+  assert.match(avisosResultado(caro).find((a) => a.id === "equilibrio-v1-sobre-cupo")!.texto, /se necesitan 56 usuarios que pagan, más que el cupo de 25/);
+  assert.ok(!ids(base).includes("equilibrio-v1-sobre-cupo")); // 12 ≤ 25
+  // 25 exactos no avisa: 25 × 43.47 = $1,086.84 de costo
+  assert.ok(!ids({ ...base, horasV1: 1, tarifaHoraV1: 1086 }).includes("equilibrio-v1-sobre-cupo"));
+});
+
+test("si la comisión se come todo el precio, v1 nunca llega al equilibrio y lo dice", () => {
+  const s = { ...base, precio: 3 };
+  assert.match(avisosResultado(s).find((a) => a.id === "equilibrio-v1-sobre-cupo")!.texto, /nunca llega al equilibrio/);
+});
+
+test("más de 25 usuarios que pagan marca el tope de v1", () => {
+  assert.ok(!ids(base).includes("pagando-sobre-cupo")); // 24
+  assert.ok(ids({ ...base, usuariosFree: 1100 }).includes("pagando-sobre-cupo")); // 26
+});
+
+test("cada aviso aparece una sola vez", () => {
+  const peor = { ...base, precio: 10, horasV1: 200, usuariosFree: 10000 };
+  const lista = ids(peor);
+  assert.equal(new Set(lista).size, lista.length);
+  assert.deepEqual([...lista].sort(), ["equilibrio-v1-sobre-cupo", "meta-necesita-v2", "pagando-sobre-cupo", "precio-bajo"]);
 });
