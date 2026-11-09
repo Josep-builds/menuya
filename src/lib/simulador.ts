@@ -21,7 +21,8 @@ export type Campo = (typeof CAMPOS)[number];
 
 // Se guardan como texto para poder borrar y reescribir sin que salte a 0.
 export type Campos = Record<Campo, string>;
-export type Precio = (typeof PRECIOS)[number];
+/** $49 o $69 (botones). Con "Otro precio" puede ser cualquier valor de $1 a $999. */
+export type Precio = number;
 export type Escenario = { nombre: string; campos: Campos; precio: Precio };
 
 // Fracción → texto en %, sin basura de punto flotante (0.036 × 100 = 3.5999999999999996).
@@ -79,9 +80,22 @@ export type Validado = { valor: number; aviso: string | null };
 const fmt = (n: number, l: Limite) =>
   l.unidad === "$" ? `$${n.toLocaleString("es-MX")}` : `${n.toLocaleString("es-MX")}${l.unidad === "%" ? "%" : ""}`;
 
+/** "Otro precio" del plan Student: de $1 a $999 al mes. */
+export const LIMITE_PRECIO: Limite = { etiqueta: "Otro precio", min: 1, max: 999, decimales: 2, unidad: "$" };
+
 /** Convierte el texto de un campo en un número dentro de su rango. Si tuvo que corregir, dice por qué. */
 export function validarCampo(campo: Campo, texto: string): Validado {
-  const l = LIMITES[campo];
+  return validarConLimite(LIMITES[campo], texto);
+}
+
+export function validarPrecio(texto: string): Validado {
+  return validarConLimite(LIMITE_PRECIO, texto);
+}
+
+/** ¿Es uno de los precios con botón ($49 / $69)? Si no, se muestra como "Otro precio". */
+export const esPrecioFijo = (p: number) => (PRECIOS as readonly number[]).includes(p);
+
+export function validarConLimite(l: Limite, texto: string): Validado {
   const limpio = texto.slice(0, MAX_CARACTERES).replace(/[$,\s%]/g, "");
   if (texto.length > MAX_CARACTERES) {
     const n = Number(limpio);
@@ -152,14 +166,14 @@ export function parseGuardados(raw: string | null): Escenario[] {
     if (!e || typeof e !== "object") continue;
     const { nombre, campos, precio } = e as Record<string, unknown>;
     if (typeof nombre !== "string" || !NOMBRE_GUARDADO.test(nombre)) continue;
-    if (!PRECIOS.includes(precio as Precio)) continue;
+    if (typeof precio !== "number" || !Number.isFinite(precio)) continue;
     if (!campos || typeof campos !== "object") continue;
     const c = campos as Record<string, unknown>;
     if (!CAMPOS.every((k) => typeof c[k] === "string" && VALOR_GUARDADO.test(c[k] as string))) continue;
     // Aunque tenga la forma correcta, cada valor vuelve a pasar por sus límites.
     out.push({
       nombre,
-      precio: precio as Precio,
+      precio: validarPrecio(String(precio)).valor,
       campos: Object.fromEntries(CAMPOS.map((k) => [k, String(validarCampo(k, c[k] as string).valor)])) as Campos,
     });
   }
@@ -171,7 +185,7 @@ export function serializarGuardados(lista: readonly Escenario[]): string {
   return JSON.stringify(
     lista.slice(0, MAX_GUARDADOS).map((e) => ({
       nombre: e.nombre,
-      precio: e.precio,
+      precio: validarPrecio(String(e.precio)).valor,
       campos: Object.fromEntries(CAMPOS.map((k) => [k, String(validarCampo(k, e.campos[k]).valor)])),
     })),
   );

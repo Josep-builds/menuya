@@ -12,7 +12,16 @@ import {
   serializarGuardados,
   type Escenario,
 } from "../src/lib/simulador";
-import { LIMITES, MAX_CARACTERES, PRECIO_MINIMO_SANO, avisosResultado, validarCampo } from "../src/lib/simulador";
+import {
+  LIMITES,
+  LIMITE_PRECIO,
+  MAX_CARACTERES,
+  PRECIO_MINIMO_SANO,
+  avisosResultado,
+  esPrecioFijo,
+  validarCampo,
+  validarPrecio,
+} from "../src/lib/simulador";
 
 const esc = (nombre: string): Escenario => ({ nombre, campos: CAMPOS_BASE, precio: 49 });
 
@@ -56,7 +65,7 @@ test("localStorage alterado o roto se ignora sin tronar", () => {
   assert.deepEqual(parseGuardados('{"a":1}'), []);
   const malos = [
     { nombre: "<script>alert(1)</script>", campos: CAMPOS_BASE, precio: 49 },
-    { nombre: "Mi escenario 1", campos: CAMPOS_BASE, precio: 1 },
+    { nombre: "Mi escenario 1", campos: CAMPOS_BASE, precio: "caro" }, // precio que no es número
     { nombre: "Mi escenario 2", campos: { ...CAMPOS_BASE, conversion: "javascript:" }, precio: 49 },
     { nombre: "Mi escenario 3", campos: { conversion: "3" }, precio: 49 },
     null,
@@ -170,4 +179,43 @@ test("cada aviso aparece una sola vez", () => {
   const lista = ids(peor);
   assert.equal(new Set(lista).size, lista.length);
   assert.deepEqual([...lista].sort(), ["equilibrio-v1-sobre-cupo", "meta-necesita-v2", "pagando-sobre-cupo", "precio-bajo"]);
+});
+
+// --- "Otro precio" ($1 a $999) ---
+
+test("Otro precio va de $1 a $999: fuera de rango se corrige y avisa", () => {
+  assert.equal(LIMITE_PRECIO.min, 1);
+  assert.equal(LIMITE_PRECIO.max, 999);
+  assert.deepEqual(validarPrecio("29"), { valor: 29, aviso: null });
+  assert.deepEqual(validarPrecio("$12.50"), { valor: 12.5, aviso: null });
+  assert.deepEqual(validarPrecio("0"), { valor: 1, aviso: "Otro precio: el mínimo es $1. Lo ajustamos." });
+  assert.deepEqual(validarPrecio("-20"), { valor: 1, aviso: "Otro precio: el mínimo es $1. Lo ajustamos." });
+  assert.deepEqual(validarPrecio("1000"), { valor: 999, aviso: "Otro precio: el máximo es $999. Lo ajustamos." });
+  assert.deepEqual(validarPrecio(""), { valor: 1, aviso: "Otro precio: está vacío. Usamos $1." });
+  assert.deepEqual(validarPrecio("gratis"), { valor: 1, aviso: "Otro precio: no es un número. Usamos $1." });
+  assert.equal(validarPrecio("12.345").valor, 12.35);
+});
+
+test("con Otro precio = $10 se ve el aviso de menor a $15; con $15 ya no", () => {
+  const conPrecio = (t: string) => aSupuestos(CAMPOS_BASE, validarPrecio(t).valor);
+  assert.ok(avisosResultado(conPrecio("10")).some((a) => a.id === "precio-bajo"));
+  assert.ok(avisosResultado(conPrecio("14.99")).some((a) => a.id === "precio-bajo"));
+  assert.ok(!avisosResultado(conPrecio("15")).some((a) => a.id === "precio-bajo"));
+  assert.ok(!avisosResultado(conPrecio("29")).some((a) => a.id === "precio-bajo"));
+});
+
+test("$49 y $69 son los precios con botón; cualquier otro va en Otro precio", () => {
+  assert.ok(esPrecioFijo(49) && esPrecioFijo(69));
+  assert.ok(!esPrecioFijo(29) && !esPrecioFijo(10));
+});
+
+test("escenarios guardados con Otro precio: se guardan y el precio se vuelve a validar al cargar", () => {
+  const lista = [{ ...esc("Mi escenario 1"), precio: 29 }];
+  assert.deepEqual(parseGuardados(serializarGuardados(lista)), lista);
+  const raw = (precio: unknown) => JSON.stringify([{ nombre: "Mi escenario 1", precio, campos: CAMPOS_BASE }]);
+  assert.equal(parseGuardados(raw(5000))[0].precio, 999);
+  assert.equal(parseGuardados(raw(0))[0].precio, 1);
+  assert.deepEqual(parseGuardados(raw("49")), []); // texto en vez de número: se descarta
+  assert.deepEqual(parseGuardados(raw(null)), []);
+  assert.equal(parseGuardados(raw(69))[0].precio, 69); // los escenarios viejos a $49/$69 siguen cargando
 });

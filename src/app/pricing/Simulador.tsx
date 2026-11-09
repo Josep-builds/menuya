@@ -9,15 +9,19 @@ import {
   MAX_CARACTERES,
   MAX_GUARDADOS,
   STORAGE_KEY,
+  LIMITE_PRECIO,
   aSupuestos,
   avisosResultado,
+  esPrecioFijo,
   nombreNuevo,
-  validarCampo,
+  validarConLimite,
+  validarPrecio,
   parseGuardados,
   serializarGuardados,
   type Campo,
   type Campos,
   type Escenario,
+  type Limite,
   type Precio,
 } from "@/lib/simulador";
 
@@ -55,14 +59,14 @@ function escribirStorage(lista: Escenario[]): boolean {
 }
 
 function CampoNum({
-  campo,
+  limite,
   label,
   value,
   onChange,
   pre,
   suf,
 }: {
-  campo: Campo;
+  limite: Limite;
   label: string;
   value: string;
   onChange: (v: string) => void;
@@ -70,10 +74,10 @@ function CampoNum({
   suf?: string;
 }) {
   const id = useId();
-  const { min, max } = LIMITES[campo];
+  const { min, max } = limite;
   // Aviso de la última corrección; se borra en cuanto la persona vuelve a escribir.
   const [corregido, setCorregido] = useState<string | null>(null);
-  const enVivo = validarCampo(campo, value);
+  const enVivo = validarConLimite(limite, value);
   const aviso = enVivo.aviso ?? corregido;
   return (
     <div>
@@ -131,7 +135,10 @@ function Fila({ k, v, fuerte }: { k: string; v: string; fuerte?: boolean }) {
 
 export function Simulador() {
   const [c, setC] = useState<Campos>(CAMPOS_BASE);
-  const [precio, setPrecio] = useState<Precio>(49);
+  // $49 / $69 con botón, o "otro" con su propia casilla validada ($1 a $999).
+  const [modoPrecio, setModoPrecio] = useState<number | "otro">(49);
+  const [precioOtro, setPrecioOtro] = useState<string>("49");
+  const precio: Precio = modoPrecio === "otro" ? validarPrecio(precioOtro).valor : modoPrecio;
   const [activo, setActivo] = useState<string | null>("Base");
   const [aviso, setAviso] = useState<string | null>(null);
   // En el servidor no hay localStorage: se lee solo en el navegador (null en el servidor).
@@ -144,7 +151,12 @@ export function Simulador() {
   };
   const cargar = (e: Escenario) => {
     setC(e.campos);
-    setPrecio(e.precio);
+    if (esPrecioFijo(e.precio)) {
+      setModoPrecio(e.precio);
+    } else {
+      setModoPrecio("otro");
+      setPrecioOtro(String(e.precio));
+    }
     setActivo(e.nombre);
     setAviso(null);
   };
@@ -261,8 +273,8 @@ export function Simulador() {
         </div>
 
         <div className="grid grid-cols-2 items-end gap-3">
-          <CampoNum campo="conversion" label="Conversión free → paid" value={c.conversion} onChange={set("conversion")} suf="%" />
-          <CampoNum campo="haircut" label="Haircut «dijo vs pagó»" value={c.haircut} onChange={set("haircut")} suf="%" />
+          <CampoNum limite={LIMITES.conversion} label="Conversión free → paid" value={c.conversion} onChange={set("conversion")} suf="%" />
+          <CampoNum limite={LIMITES.haircut} label="Haircut «dijo vs pagó»" value={c.haircut} onChange={set("haircut")} suf="%" />
         </div>
         <p className="-mt-2 text-xs text-neutral-500">
           Haircut: de los que dicen que sí pagarían, qué parte al final no paga.
@@ -270,25 +282,39 @@ export function Simulador() {
 
         <div>
           <p className="text-sm font-medium text-neutral-800">Precio Student al mes</p>
-          <div className="mt-1 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Precio Student al mes">
-            {PRECIOS.map((p) => (
+          <div className="mt-1 grid grid-cols-3 gap-2" role="radiogroup" aria-label="Precio Student al mes">
+            {[...PRECIOS, "otro" as const].map((p) => (
               <button
                 key={p}
                 type="button"
                 role="radio"
-                aria-checked={precio === p}
+                aria-checked={modoPrecio === p}
                 onClick={() => {
-                  setPrecio(p);
+                  setModoPrecio(p);
                   setActivo(null);
                 }}
-                className={`rounded-xl border py-2 font-semibold ${
-                  precio === p ? "border-brand bg-brand text-white" : "border-neutral-300 bg-white text-neutral-800"
+                className={`rounded-xl border px-1 py-2 font-semibold ${
+                  modoPrecio === p ? "border-brand bg-brand text-white" : "border-neutral-300 bg-white text-neutral-800"
                 }`}
               >
-                ${p} MXN
+                {p === "otro" ? "Otro precio" : `$${p} MXN`}
               </button>
             ))}
           </div>
+          {modoPrecio === "otro" && (
+            <div className="mt-3">
+              <CampoNum
+                limite={LIMITE_PRECIO}
+                label="Otro precio (MXN al mes)"
+                value={precioOtro}
+                onChange={(v) => {
+                  setPrecioOtro(v);
+                  setActivo(null);
+                }}
+                pre="$"
+              />
+            </div>
+          )}
         </div>
       </fieldset>
 
@@ -296,9 +322,9 @@ export function Simulador() {
         <legend className="px-1 text-sm font-semibold uppercase tracking-wide text-brand">Comisión del procesador</legend>
         <p className="text-xs text-neutral-500">Procesador todavía no decidido. Comisión = (% × precio + fijo) + IVA sobre la comisión.</p>
         <div className="grid grid-cols-3 items-end gap-3">
-          <CampoNum campo="pct" label="%" value={c.pct} onChange={set("pct")} suf="%" />
-          <CampoNum campo="fijo" label="Fijo" value={c.fijo} onChange={set("fijo")} pre="$" />
-          <CampoNum campo="iva" label="IVA" value={c.iva} onChange={set("iva")} suf="%" />
+          <CampoNum limite={LIMITES.pct} label="%" value={c.pct} onChange={set("pct")} suf="%" />
+          <CampoNum limite={LIMITES.fijo} label="Fijo" value={c.fijo} onChange={set("fijo")} pre="$" />
+          <CampoNum limite={LIMITES.iva} label="IVA" value={c.iva} onChange={set("iva")} suf="%" />
         </div>
       </fieldset>
 
@@ -309,14 +335,14 @@ export function Simulador() {
           <span className="font-normal text-neutral-500">· cupo {num(s.cupoV1)} usuarios</span>
         </p>
         <div className="grid grid-cols-3 items-end gap-3">
-          <CampoNum campo="horasV1" label="Horas" value={c.horasV1} onChange={set("horasV1")} suf="h" />
-          <CampoNum campo="tarifaHoraV1" label="Por hora" value={c.tarifaHoraV1} onChange={set("tarifaHoraV1")} pre="$" />
-          <CampoNum campo="cupoV1" label="Cupo" value={c.cupoV1} onChange={set("cupoV1")} />
+          <CampoNum limite={LIMITES.horasV1} label="Horas" value={c.horasV1} onChange={set("horasV1")} suf="h" />
+          <CampoNum limite={LIMITES.tarifaHoraV1} label="Por hora" value={c.tarifaHoraV1} onChange={set("tarifaHoraV1")} pre="$" />
+          <CampoNum limite={LIMITES.cupoV1} label="Cupo" value={c.cupoV1} onChange={set("cupoV1")} />
         </div>
         <p className="mt-2 text-sm font-medium">v2: {peso(r.costoV2)}/mes</p>
         <div className="grid grid-cols-2 items-end gap-3">
-          <CampoNum campo="proveedorWhatsAppV2" label="+ Proveedor WhatsApp" value={c.proveedorWhatsAppV2} onChange={set("proveedorWhatsAppV2")} pre="$" />
-          <CampoNum campo="metaMensual" label="Meta mensual" value={c.metaMensual} onChange={set("metaMensual")} pre="$" />
+          <CampoNum limite={LIMITES.proveedorWhatsAppV2} label="+ Proveedor WhatsApp" value={c.proveedorWhatsAppV2} onChange={set("proveedorWhatsAppV2")} pre="$" />
+          <CampoNum limite={LIMITES.metaMensual} label="Meta mensual" value={c.metaMensual} onChange={set("metaMensual")} pre="$" />
         </div>
       </fieldset>
 
