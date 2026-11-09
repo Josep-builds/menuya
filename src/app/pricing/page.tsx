@@ -7,9 +7,6 @@ export const metadata: Metadata = {
   description: "Que el súper te alcance hasta el siguiente depósito. Free $0 o Student $49 MXN al mes.",
 };
 
-// Lista de espera (no es checkout: no pide tarjeta ni cobra nada).
-const APARTAR_URL = "https://claude.ai/artifact/7VuUWUeXRLKuw7fn2itkcE";
-
 function Check({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex gap-2">
@@ -48,14 +45,12 @@ export default function PricingPage() {
             <Check>Chequeo del día 9</Check>
             <Check>Recálculo del día 13</Check>
           </ul>
-          <a
-            href={APARTAR_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/apartar"
             className="mt-5 block w-full rounded-2xl bg-brand py-4 text-center text-lg font-semibold text-white hover:bg-brand-dark"
           >
             Apartar mi lugar
-          </a>
+          </Link>
           <p className="mt-2 text-center text-xs text-neutral-500">
             Todavía no cobramos. Apartar no pide tarjeta ni datos de pago.
           </p>
