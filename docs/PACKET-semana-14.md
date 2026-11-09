@@ -38,7 +38,7 @@ Estado honesto: entrevisté a 2 amigos y a 0 desconocidos, y nadie ha pagado. Un
 
 | Dato | Mockup (mal) | Corregido |
 |---|---|---|
-| Ingreso | $7,350/mes y $88,200/año, que no salen de 15 usuarios con 60% de conversión | Ingreso = usuarios que pagan × **$43.47 neto** (ya sin comisiones de Stripe). Ejemplo: 12 pagando dan $521.64/mes y $6,259.68/año |
+| Ingreso | $7,350/mes y $88,200/año, que no salen de 15 usuarios con 60% de conversión | Ingreso = usuarios que pagan × **$43.47 neto**, ya sin la comisión estimada tipo Stripe (procesador aún no decidido). Ejemplo: 12 pagando dan $522/mes y $6,260/año |
 | Costo fijo | $4,900/mes | **v1: $480/mes** (~4 h de mi tiempo × $120/h) · **v2: $1,179/mes** ($480 + ~$699 del proveedor de WhatsApp) |
 | Punto de equilibrio | ≈ 10 usuarios, y además $4,900 ÷ $49 da 100, no 10 | **v1: 12 usuarios · v2: 28 usuarios** (costo fijo ÷ neto, redondeado hacia arriba) |
 | Conversión | 60% | **3%** de Free a Student como default (se puede editar y los supuestos se ven) |
@@ -134,7 +134,7 @@ En 3 años, MenúYA es la forma normal en que un joven que vive solo en México 
 **Validación de inputs**
 - [ ] No acepta negativos, texto, ni campos vacíos sin mostrar un aviso
 - [ ] La conversión va de 0% a 100%
-- [ ] Un precio menor a $15 muestra la advertencia de que la comisión fija de Stripe se come ~un tercio
+- [ ] Con «Otro precio» menor a $15 (por ejemplo $10) se muestra la advertencia de que la comisión fija se come ~un tercio; con $15 o más ya no aparece
 - [ ] Los usuarios que pagan en v1 marcan el tope de 25
 
 **Escenarios guardados**
