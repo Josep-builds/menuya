@@ -338,3 +338,14 @@ Consequences / how we work with it:
 - Verificado sin login: https://menuyamx.xyz, `/pricing`, `/about` y `/apartar` → 200, sin la pantalla de Vercel. La protección estándar no aplica a los dominios propios de producción.
 - semana14.menuyamx.xyz y las URLs `*.vercel.app` de los previews vuelven a pedir login de Vercel.
 - **Entrega de la Semana 14: https://menuyamx.xyz/pricing**, ya no semana14.menuyamx.xyz.
+
+## 2026-11-10 · Repo `menuya` público
+
+- **El repo https://github.com/Josep-builds/menuya se hizo público el 10 nov 2026**, igual que los repos de semanas anteriores (peldano, mi-total, quien-rompe-paga, ruta-segura). Así el profe puede abrir el código y los tags sin cuenta.
+- **Antes se revisó todo el historial** (43 commits, ramas `main`, `semana-14` y `post-semana-13`, incluidos diffs y lo que se borró después):
+  - Sin llaves secretas: ni `service_role`, ni `sb_secret`, ni JWT, ni tokens de Vercel o GitHub.
+  - Nunca se subió un `.env*`; `.env*`, `.vercel` y `supabase/.temp` están en `.gitignore`.
+  - `tests/smoke.sh` lee la llave anónima de `.env.local` al correr; no la trae escrita.
+  - En el PDF del BUILDCHAT de la Semana 13, la llave anónima aparece como `[REDACTADO]`.
+- **Datos personales que quedaron públicos (decisión del dueño):** correos y nombre de la computadora en `docs/DECISIONS.md`, `db/seeds/` y `docs/BUILDCHAT_josepferre.pdf`. No se reescribió el historial, para no cambiar el commit del tag `semana-13`. No hay correos de usuarios reales; los de `tests/` son de prueba.
+- **Verificado sin login:** el repo, `/tree/semana-13` y `/tree/entrega-semana-14` responden 200.
