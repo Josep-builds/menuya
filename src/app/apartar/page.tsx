@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BeneficiosStudent } from "@/components/BeneficiosStudent";
 import { precioDesdeParam } from "@/lib/apartar";
 import { Apartar } from "./Apartar";
 
@@ -29,11 +30,9 @@ export default async function ApartarPage({
         <p className="mt-1 text-3xl font-bold">
           ${precio} <span className="text-base font-medium text-neutral-600">MXN/mes</span>
         </p>
-        <ul className="mt-4 flex flex-col gap-2 text-neutral-700">
-          <li>✓ Reserva el día del depósito</li>
-          <li>✓ Chequeo del día 9</li>
-          <li>✓ Recálculo del día 13</li>
-        </ul>
+        <div className="mt-4">
+          <BeneficiosStudent />
+        </div>
         <p className="mt-4 text-sm text-neutral-600">Solo Walmart · Solo Santa Fe, CDMX · 25 lugares.</p>
       </section>
 

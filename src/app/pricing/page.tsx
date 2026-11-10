@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BeneficiosStudent } from "@/components/BeneficiosStudent";
+import { BENEFICIO_FREE, PARA_FORANEOS } from "@/lib/planes";
 import { Simulador } from "./Simulador";
 
 export const metadata: Metadata = {
@@ -31,7 +33,9 @@ export default function PricingPage() {
           <h2 className="text-lg font-semibold">Free</h2>
           <p className="mt-1 text-3xl font-bold">$0</p>
           <ul className="mt-4 flex flex-col gap-2 text-neutral-700">
-            <Check>La lista de súper</Check>
+            <Check>
+              <b className="text-neutral-900">La lista de súper:</b> {BENEFICIO_FREE}
+            </Check>
           </ul>
         </article>
 
@@ -40,11 +44,9 @@ export default function PricingPage() {
           <p className="mt-1 text-3xl font-bold">
             $49 <span className="text-base font-medium text-neutral-600">MXN/mes</span>
           </p>
-          <ul className="mt-4 flex flex-col gap-2 text-neutral-700">
-            <Check>Reserva el día del depósito</Check>
-            <Check>Chequeo del día 9</Check>
-            <Check>Recálculo del día 13</Check>
-          </ul>
+          <div className="mt-4">
+            <BeneficiosStudent />
+          </div>
           <Link
             href="/apartar"
             className="mt-5 block w-full rounded-2xl bg-brand py-4 text-center text-lg font-semibold text-white hover:bg-brand-dark"
@@ -67,6 +69,7 @@ export default function PricingPage() {
               Disponible
             </span>
             <p className="mt-2 font-semibold">Estudiantes foráneos</p>
+            <p className="mt-1 text-sm text-neutral-600">{PARA_FORANEOS}</p>
           </div>
           <div className="rounded-2xl bg-white p-4">
             <span className="inline-block rounded-full bg-neutral-200 px-2 py-0.5 text-xs font-semibold text-neutral-700">
