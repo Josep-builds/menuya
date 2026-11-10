@@ -299,3 +299,29 @@ Consequences / how we work with it:
 - Revisión a mano de precios en el Walmart de Santa Fe.
 
 **Primer paso de mañana:** volver a pasar las 7 pantallas por el mismo persona test para ver si ya entiende qué hace el plan de $49. Después, la conversación de precio real con un desconocido.
+
+## 2026-11-10 · Session Close (merge de la Semana 14 a producción)
+
+**Merge hecho el 10 nov 2026:** `semana-14` → `main` con merge normal, sin squash (commit `ebf3d39`). Producción (https://menuyamx.xyz) quedó desplegada en `ebf3d39`.
+- **Antes del merge:**
+  - `git diff --name-status main semana-14` mostró solo archivos nuevos, más `src/proxy.ts` (3 rutas públicas) y `docs/DECISIONS.md` (solo líneas agregadas).
+  - `PayButton.tsx`, `src/app/pago-pendiente/page.tsx`, `tests/elcsa.test.ts` y `docs/PACKET.md` sin cambios.
+  - 69/69 pruebas y build sin errores.
+- **Después del merge, en menuyamx.xyz:**
+  - `/pricing`, `/about` y `/apartar` (y `?p=69`) abren sin login, con los textos del persona test.
+  - `/`, `/privacidad`, `/entrar` y `/pago-pendiente` tienen **el mismo texto visible que antes** (comparado antes y después); `/pago-pendiente` sigue diciendo "Volver".
+  - Las pantallas con sesión siguen mandando a `/entrar`.
+- **`/ahorro`:** no se pudo ver sin sesión. Se construyó desde `ebf3d39`, donde `PayButton.tsx` es idéntico al de `2f61acb` (sigue el botón "$149 por semestre"). Pendiente que el dueño lo confirme con su cuenta.
+- **Nuevo en `/pricing`:** "únete a la lista de espera" de papás abre WhatsApp con el mensaje "Hola, soy papá/mamá de un estudiante foráneo y quiero estar en la lista de espera de MenúYA."
+- **URL de entrega de la Semana 14:** https://menuyamx.xyz/pricing (y `/about`, `/apartar`). semana14.menuyamx.xyz sigue ligado a la rama `semana-14`.
+
+**Pendiente (después de la calificación de la Semana 13)**
+- **Aplicar `post-semana-13`** (botón "Ver planes" → `/pricing`, `/pago-pendiente` a $49 al mes y la prueba 11A.5 nueva).
+  - ⚠️ **No se aplica con `git merge post-semana-13`**: su commit (`8c7fce1`) ya está en el historial de `main`, así que el merge no haría nada.
+  - Esos cambios están en `a094444` y se deshicieron en `29f717d`. Para aplicarlos: `git revert 29f717d` en una rama, pruebas y merge a `main`.
+- **Volver a prender Vercel Authentication** (Settings → Deployment Protection → Standard Protection). La entrega ya está en el dominio de producción, que no pide login aunque la protección esté prendida.
+- Agregar `/pricing`, `/about` y `/apartar` a `tests/smoke.sh`.
+- Confirmar `/ahorro` con la cuenta del fundador.
+- Revisión a mano de precios en el Walmart de Santa Fe.
+
+**Primer paso de mañana:** persona test con una persona real y la conversación de precio real con un desconocido. Anotar cada contacto como dijo → abrió → apartó.
