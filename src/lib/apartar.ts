@@ -11,7 +11,7 @@ export function precioDesdeParam(p: string | string[] | undefined): PrecioAparta
 }
 
 export function mensajeWhatsApp(precio: PrecioApartar): string {
-  return `Hola, quiero apartar mi lugar en MenúYA (plan Student $${precio}/mes) para diciembre.`;
+  return `Hola, quiero apartar mi lugar en MenúYA (plan Student $${precio}/mes) para el primer grupo.`;
 }
 
 export function enlaceWhatsApp(precio: PrecioApartar): string {

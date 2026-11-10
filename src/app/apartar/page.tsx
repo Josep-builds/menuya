@@ -6,7 +6,7 @@ import { Apartar } from "./Apartar";
 
 export const metadata: Metadata = {
   title: "Apartar mi lugar · MenúYA",
-  description: "Aparta tu lugar en MenúYA Student para diciembre. Todavía no cobramos.",
+  description: "Aparta tu lugar en MenúYA Student para el primer grupo. Todavía no cobramos.",
 };
 
 export default async function ApartarPage({
@@ -22,7 +22,7 @@ export default async function ApartarPage({
         <Link href="/" className="text-sm font-semibold uppercase tracking-wide text-brand">
           MenúYA
         </Link>
-        <h1 className="text-3xl font-bold leading-tight">Aparta tu lugar para diciembre</h1>
+        <h1 className="text-3xl font-bold leading-tight">Aparta tu lugar para el primer grupo</h1>
       </header>
 
       <section className="rounded-2xl border-2 border-brand bg-white p-5">
