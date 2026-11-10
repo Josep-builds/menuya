@@ -205,3 +205,97 @@ Consequences / how we work with it:
 
 **Primer paso de la próxima sesión**
 - Entrar a menuyamx.xyz con la cuenta del fundador, pasar ELCSA, sacar la captura "después" de `/linea-base` y probar "Saltar por ahora" → aviso en el inicio → llenar 1 pedido → el aviso desaparece.
+
+## 2026-11-09 · Semana 14: Pricing (rama `semana-14`, no en producción)
+
+- **Rama aparte:** la Semana 13 aún no está calificada, así que menuyamx.xyz (producción, rama `main`) no cambia. Todo lo de la Semana 14 vive en la rama `semana-14` y se revisa en su URL de preview de Vercel. Se mezcla a `main` solo cuando el dueño lo diga.
+- **Páginas públicas nuevas** (sin login ni base de datos, agregadas a `PUBLIC_PATHS` en `src/proxy.ts`): `/pricing` (Free $0 / Student $49 MXN al mes, "¿Para quién es?", simulador, límites) y `/about` (memo 10:1: un pedido de $610.11 vs. ~$60 de comida planeada → ≈ 11:1 contra $49).
+- **Precio viejo (actualizado el mismo día):** el cambio del botón "$149 por semestre" → "Ver planes", el nuevo texto de `/pago-pendiente` y la prueba 11A.5 nueva se movieron a la rama `post-semana-13`, que se aplica después de calificar la Semana 13. En `semana-14` esos 3 archivos quedan idénticos a `main` (`2f61acb`). Mientras tanto, $149 (en `/ahorro`) y $49 (en `/pricing`) conviven.
+- **No cobramos:** no hay checkout ni datos de tarjeta. `NEXT_PUBLIC_PAY_LINK` sigue igual que en `main`.
+- **Simulador** (`src/lib/pricing.ts`, con pruebas en `tests/pricing.test.ts`):
+  - Usuarios que pagan = free × conversión × (1 − haircut), redondeado hacia abajo.
+  - Comisión = (% × precio + fijo) × 1.16 (IVA sobre la comisión). El procesador no está decidido.
+  - Los usuarios necesarios siempre se redondean hacia arriba.
+  - A $49: neto $43.47, equilibrio v1 ($480) = 12, v2 ($1,179) = **28** (no 27: con 27 faltan ~$5), meta $9,343 = 215.
+  - El ingreso no depende de cuánto gasta el usuario.
+- **Precios frescos:** `docs/precios-frescos-2026-11-09.md`. Vistos en walmart.com.mx sin elegir sucursal; la revisión a mano en Santa Fe sigue pendiente. Se guardan con rango de ±15%.
+- La prueba 11A.5 que busca "$149" solo en `src/` está en `post-semana-13`; en `semana-14` sigue la original de `main`.
+
+**URL de entrega y Deployment Protection (2026-11-09)**
+- URL de entrega de la Semana 14: **https://semana14.menuyamx.xyz/pricing** (y `/about`). Es un dominio de Vercel DNS ligado a la rama `semana-14`; cada push a esa rama lo actualiza. Producción (menuyamx.xyz, `main`, commit `2f61acb`) no cambió.
+- **Vercel Authentication se apagó el 9 nov 2026 en el proyecto `menuya`** (solo este proyecto) para que el profe abra la entrega de la Semana 14 sin cuenta de Vercel. Antes estaba en "Standard Protection" (`all_except_custom_domains`), que también protege los dominios propios de ramas que no son producción. Por eso un subdominio solo no bastó.
+- Mientras esté apagada, todos los previews de `menuya` son públicos. El riesgo es bajo: es el mismo código que ya es público en producción, y los datos siguen protegidos por RLS.
+- **Se puede volver a prender después de la calificación:** Vercel → menuya → Settings → Deployment Protection → Vercel Authentication → Standard Protection. Al prenderla, semana14.menuyamx.xyz vuelve a pedir login.
+
+## 2026-11-09 · Session Close (Semana 14)
+
+**Cambio de plan:** la Semana 14 se entrega en menuyamx.xyz, pero la Semana 13 no está calificada. Por eso `semana-14` **solo agrega** cosas: páginas nuevas, `src/proxy.ts` y `docs/`. No se mezcla a `main` hasta que el dueño lo diga.
+
+**Hecho hoy (rama `semana-14`)**
+- `/pricing` (pública):
+  - Promesa, Free $0 / Student $49 MXN al mes, "¿Para quién es?" y límites.
+  - La tarjeta de papás dice quién paga: "el papá o la mamá · $69 MXN/mes (hipótesis, aún no a la venta)".
+  - "Apartar mi lugar" lleva a `/apartar`.
+- **Simulador:**
+  - Escenarios Conservador / Base / Optimista.
+  - "Guardar escenario" en localStorage (solo números y un nombre automático, con try/catch, máximo 10), con lista para cargar y borrar.
+  - Cada campo tiene mínimo, máximo, decimales y largo máximo (9 caracteres). Un valor fuera de rango se corrige y muestra aviso.
+  - Las cuentas a $49 cuadran: neto $43.47, equilibrio v1 = 12, v2 = 28, meta = 215.
+- `/apartar` (pública):
+  - Student $49 al mes, o $69 con `?p=69`.
+  - "Apartar mi lugar para diciembre" muestra el aviso "Todavía no cobramos. No se te cargó nada. Estamos midiendo interés."
+  - Luego hay un botón a WhatsApp (+52 55 4502 2101) con el mensaje armado. No hay tarjeta, datos bancarios ni base de datos.
+- `/about`: memo 10:1. El costo está en dinero, tiempo y riesgo.
+- `docs/precios-frescos-2026-11-09.md` y `docs/TESTS.md` (pasada mecánica con 3 bugs corregidos).
+- Pruebas: 49/49 (`npm test`).
+- **Entrega:** https://semana14.menuyamx.xyz/pricing (`/about`, `/apartar`). Es el subdominio ligado a `semana-14`, y Vercel Authentication está apagada en el proyecto `menuya` (ver arriba).
+
+**$149 y $49 conviven temporalmente**
+- Hasta que califiquen la Semana 13, `/ahorro` sigue mostrando "Apoyar MenúYA · $149 por semestre" (igual que en `main`), y `/pricing` dice $49 al mes.
+- El cambio que los une está guardado en la rama local `post-semana-13`:
+  - El botón cambia a "Ver planes" → `/pricing`.
+  - `/pago-pendiente` se alinea a $49 al mes.
+  - La prueba 11A.5 busca "$149" solo en `src/`.
+- Se aplica después de la calificación.
+
+**Pendiente**
+- Mezclar `semana-14` a `main` (producción) cuando el dueño lo diga. Después, aplicar `post-semana-13`.
+- Volver a prender Vercel Authentication después de la calificación.
+- Revisión a mano de los precios en el Walmart de Santa Fe.
+- Agregar `/pricing`, `/about` y `/apartar` a `tests/smoke.sh` cuando lleguen a producción.
+
+**Primer paso de mañana:** persona test + conversación de precio real.
+
+## 2026-11-10 · Session Close (persona test de la Semana 14)
+
+**Hecho hoy (rama `semana-14`; `main` y producción sin tocar)**
+- Persona test con Andrés (19, foráneo de Hermosillo), en un chat nuevo de Claude con 7 capturas de semana14.menuyamx.xyz tomadas en iPad (Safari, navegación privada) → `docs/PERSONA_semana14.md`.
+- **Arreglo principal:** cada beneficio de Student se explica en lenguaje simple, igual en `/pricing` y `/apartar`. Los textos están en un solo lugar (`src/lib/planes.ts`, componente `BeneficiosStudent`).
+  - El beneficio del depósito aclara "Nunca tocamos tu cuenta".
+  - Free dice "Te damos la lista; tú la sigues solo".
+  - La tarjeta de foráneos dice qué resuelve.
+- **Simulador:** queda en `/pricing`, dentro de un `<details>` "Para el curso: ¿cuándo se sostiene MenúYA?", cerrado y después de los límites. Las cuentas y las pruebas no cambiaron.
+- **`/apartar`:**
+  - "Para el primer grupo" en lugar de "para diciembre", también en el mensaje de WhatsApp.
+  - Confirmación "Listo, quedaste en la lista" con el último paso y el botón "Confirmar por WhatsApp".
+  - Aviso de cobro: "Antes de cobrar te preguntamos; si no dices que sí, no se te cobra nada. Cancelas mandando BAJA."
+  - Se quitó "Estamos midiendo interés".
+- `docs/TESTS.md` tiene la sección del persona test. Pasan 65/65 pruebas.
+- **Siguen conviviendo $149 (en `/ahorro`) y $49 (en `/pricing`)** hasta que califiquen la Semana 13. El cambio que los une está en `post-semana-13`, ya respaldada en GitHub.
+
+**Pendiente**
+- ~~De este persona test, sin arreglar~~ → **arreglado el mismo día** (commit `06ce7fa`):
+  - La tarjeta de papás dice "Próximamente · únete a la lista de espera".
+  - Abajo del precio de Student: "Cancelas cuando quieras mandando BAJA por WhatsApp. Antes de cobrar te preguntamos."
+  - El aviso "no pide tarjeta" ahora es más grande. Ver `docs/TESTS.md`.
+- **El precio de $69 para papás sigue siendo hipótesis:** no se ha probado con ningún papá. La página ya no dice "hipótesis" porque hacía pensar que la app no existe, pero el dato no ha cambiado.
+- **Persona test con una persona real** (no un chat) y la conversación de precio real con un desconocido.
+- **Merge de `semana-14` a `main`: NO espera a la calificación de la 13** (corregido el 10 nov).
+  - `semana-14` solo agrega archivos nuevos, más `src/proxy.ts` (3 rutas públicas nuevas) y `docs/`. No cambia ninguna pantalla de la Semana 13.
+  - Se hace cuando el dueño lo diga. Después del merge: agregar `/pricing`, `/about` y `/apartar` a `tests/smoke.sh`.
+- **Lo que sí espera a la calificación de la 13:**
+  - Aplicar `post-semana-13`: botón "$149 por semestre" → "Ver planes", `/pago-pendiente` a $49 al mes y la prueba 11A.5 nueva.
+  - Volver a prender Vercel Authentication.
+- Revisión a mano de precios en el Walmart de Santa Fe.
+
+**Primer paso de mañana:** volver a pasar las 7 pantallas por el mismo persona test para ver si ya entiende qué hace el plan de $49. Después, la conversación de precio real con un desconocido.
