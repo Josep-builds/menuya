@@ -30,3 +30,13 @@ test("/pricing y /apartar usan los mismos beneficios explicados (no los nombres 
 test("el beneficio del día del depósito aclara que nunca tocamos la cuenta", () => {
   assert.match(BENEFICIOS_STUDENT[0].que, /Nunca tocamos tu cuenta\./);
 });
+
+test("el simulador está en /pricing dentro de un <details> cerrado, después de los límites", () => {
+  const code = read("src/app/pricing/page.tsx");
+  const det = code.indexOf("<details");
+  assert.ok(det > code.indexOf("Límites"), "va después de Límites");
+  assert.doesNotMatch(code.slice(det, code.indexOf(">", det)), /\bopen\b/, "cerrado por defecto");
+  assert.ok(code.indexOf("<Simulador />") > det && code.indexOf("<Simulador />") < code.indexOf("</details>"));
+  assert.match(code, /Para el curso: ¿cuándo se sostiene MenúYA\?/);
+  assert.equal(code.match(/<Simulador \/>/g)?.length, 1);
+});

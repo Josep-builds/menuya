@@ -84,11 +84,6 @@ export default function PricingPage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-xl font-bold">Simulador: ¿cuándo se sostiene MenúYA?</h2>
-        <Simulador />
-      </section>
-
-      <section className="flex flex-col gap-3">
         <h2 className="text-xl font-bold">Límites</h2>
         <ul className="flex flex-col gap-2 rounded-2xl bg-white p-5 text-neutral-700">
           <li>• Solo Walmart.</li>
@@ -98,6 +93,19 @@ export default function PricingPage() {
           <li>• Nunca nos conectamos a tu banco.</li>
         </ul>
       </section>
+
+      {/* Persona test 10 nov 2026: el simulador es para el curso, no para el usuario. Cerrado por defecto. */}
+      <details className="group rounded-2xl border border-neutral-200 bg-white/60">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-lg font-bold [&::-webkit-details-marker]:hidden">
+          <span>Para el curso: ¿cuándo se sostiene MenúYA?</span>
+          <span aria-hidden className="text-brand transition-transform group-open:rotate-180">
+            ▾
+          </span>
+        </summary>
+        <div className="px-4 pb-4">
+          <Simulador />
+        </div>
+      </details>
 
       <footer className="flex flex-col items-center gap-2 text-sm text-neutral-600">
         <Link href="/about" className="underline">
