@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BeneficiosStudent } from "@/components/BeneficiosStudent";
-import { AVISO_SIN_COBRO, BENEFICIO_FREE, CANCELAR_STUDENT, PAPAS_ESTADO, PARA_FORANEOS } from "@/lib/planes";
+import { enlaceWhatsAppPapas } from "@/lib/apartar";
+import { AVISO_SIN_COBRO, BENEFICIO_FREE, CANCELAR_STUDENT, PAPAS_ESTADO, PAPAS_UNETE, PARA_FORANEOS } from "@/lib/planes";
 import { Simulador } from "./Simulador";
 
 export const metadata: Metadata = {
@@ -81,7 +82,16 @@ export default function PricingPage() {
             <p className="mt-1 text-sm text-neutral-600">
               Paga: el papá o la mamá · $69 MXN/mes
             </p>
-            <p className="mt-1 text-sm font-medium text-neutral-700">{PAPAS_ESTADO}
+            <p className="mt-1 text-sm font-medium text-neutral-700">
+              {PAPAS_ESTADO.slice(0, -PAPAS_UNETE.length)}
+              <a
+                href={enlaceWhatsAppPapas()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-brand underline"
+              >
+                {PAPAS_UNETE}
+              </a>
             </p>
           </div>
         </div>

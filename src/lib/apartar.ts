@@ -17,3 +17,11 @@ export function mensajeWhatsApp(precio: PrecioApartar): string {
 export function enlaceWhatsApp(precio: PrecioApartar): string {
   return `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensajeWhatsApp(precio))}`;
 }
+
+/** Lista de espera de papás (v2). Solo abre WhatsApp con el mensaje escrito; no guardamos nada. */
+export const MENSAJE_WHATSAPP_PAPAS =
+  "Hola, soy papá/mamá de un estudiante foráneo y quiero estar en la lista de espera de MenúYA.";
+
+export function enlaceWhatsAppPapas(): string {
+  return `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(MENSAJE_WHATSAPP_PAPAS)}`;
+}

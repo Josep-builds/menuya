@@ -7,8 +7,10 @@ import {
   BENEFICIO_FREE,
   CANCELAR_STUDENT,
   PAPAS_ESTADO,
+  PAPAS_UNETE,
   PARA_FORANEOS,
 } from "../src/lib/planes";
+import { MENSAJE_WHATSAPP_PAPAS, enlaceWhatsAppPapas } from "../src/lib/apartar";
 
 const read = (f: string) => readFileSync(f, "utf8");
 const linea = (b: { cuando: string; que: string }) => `${b.cuando}: ${b.que}`;
@@ -53,7 +55,7 @@ test("el simulador está en /pricing dentro de un <details> cerrado, después de
 test("tarjeta de papás: «Próximamente · únete a la lista de espera», ya no «hipótesis, aún no a la venta»", () => {
   const code = read("src/app/pricing/page.tsx");
   assert.equal(PAPAS_ESTADO, "Próximamente · únete a la lista de espera");
-  assert.match(code, /\{PAPAS_ESTADO\}/);
+  assert.match(code, /\{PAPAS_ESTADO\.slice\(0, -PAPAS_UNETE\.length\)\}/);
   assert.doesNotMatch(code, /hipótesis|aún no a la venta/);
   assert.match(code, /Paga: el papá o la mamá · \$69 MXN\/mes/);
 });
@@ -75,4 +77,19 @@ test("el aviso de no cobro se ve más: texto sm (no xs) y con fondo", () => {
   assert.match(clases, /text-sm/);
   assert.doesNotMatch(clases, /text-xs/);
   assert.match(clases, /bg-green-50/);
+});
+
+test("papás: «únete a la lista de espera» abre WhatsApp con el mensaje para papás", () => {
+  const u = new URL(enlaceWhatsAppPapas());
+  assert.equal(u.origin + u.pathname, "https://wa.me/525545022101");
+  assert.equal(
+    u.searchParams.get("text"),
+    "Hola, soy papá/mamá de un estudiante foráneo y quiero estar en la lista de espera de MenúYA.",
+  );
+  assert.equal(MENSAJE_WHATSAPP_PAPAS, u.searchParams.get("text"));
+  assert.ok(PAPAS_ESTADO.endsWith(PAPAS_UNETE));
+  assert.equal(PAPAS_ESTADO.slice(0, -PAPAS_UNETE.length), "Próximamente · ");
+  const code = read("src/app/pricing/page.tsx");
+  const liga = code.slice(code.indexOf("href={enlaceWhatsAppPapas()}"), code.indexOf("{PAPAS_UNETE}"));
+  assert.ok(liga.length > 0 && liga.includes('rel="noopener noreferrer"'), "la liga envuelve «únete a la lista de espera»");
 });

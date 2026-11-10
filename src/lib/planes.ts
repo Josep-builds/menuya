@@ -27,3 +27,4 @@ export const CANCELAR_STUDENT = "Cancelas cuando quieras mandando BAJA por Whats
 export const AVISO_SIN_COBRO = "Todavía no cobramos. Apartar no pide tarjeta ni datos de pago.";
 /** Tarjeta de papás. El $69 sigue siendo hipótesis (ver docs/DECISIONS.md); ya no se dice en la página porque hacía pensar que la app no existe. */
 export const PAPAS_ESTADO = "Próximamente · únete a la lista de espera";
+export const PAPAS_UNETE = "únete a la lista de espera";
