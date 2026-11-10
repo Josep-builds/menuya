@@ -319,9 +319,22 @@ Consequences / how we work with it:
 - **Aplicar `post-semana-13`** (botón "Ver planes" → `/pricing`, `/pago-pendiente` a $49 al mes y la prueba 11A.5 nueva).
   - ⚠️ **No se aplica con `git merge post-semana-13`**: su commit (`8c7fce1`) ya está en el historial de `main`, así que el merge no haría nada.
   - Esos cambios están en `a094444` y se deshicieron en `29f717d`. Para aplicarlos: `git revert 29f717d` en una rama, pruebas y merge a `main`.
-- **Volver a prender Vercel Authentication** (Settings → Deployment Protection → Standard Protection). La entrega ya está en el dominio de producción, que no pide login aunque la protección esté prendida.
+- ~~Volver a prender Vercel Authentication~~ → hecho el 10 nov (ver abajo).
 - Agregar `/pricing`, `/about` y `/apartar` a `tests/smoke.sh`.
 - Confirmar `/ahorro` con la cuenta del fundador.
 - Revisión a mano de precios en el Walmart de Santa Fe.
 
 **Primer paso de mañana:** persona test con una persona real y la conversación de precio real con un desconocido. Anotar cada contacto como dijo → abrió → apartó.
+
+## 2026-11-10 · Tags y Vercel Authentication
+
+**Tags (anotados, ya en GitHub)**
+- `semana-13` → `2f61acb`: el estado de la Semana 13 tal como está para calificar.
+- `entrega-semana-14` → `2142a0d`: la Semana 14 en producción (merge `ebf3d39` + Session Close).
+- El tag de la 14 no se llama `semana-14` porque ya hay una **rama** con ese nombre, y git usaría el tag en lugar de la rama en comandos como `git diff main semana-14`. Las ramas `semana-14` y `post-semana-13` se quedan.
+
+**Vercel Authentication prendida otra vez (10 nov 2026)**
+- Proyecto `menuya`: Standard Protection (`all_except_custom_domains`).
+- Verificado sin login: https://menuyamx.xyz, `/pricing`, `/about` y `/apartar` → 200, sin la pantalla de Vercel. La protección estándar no aplica a los dominios propios de producción.
+- semana14.menuyamx.xyz y las URLs `*.vercel.app` de los previews vuelven a pedir login de Vercel.
+- **Entrega de la Semana 14: https://menuyamx.xyz/pricing**, ya no semana14.menuyamx.xyz.
