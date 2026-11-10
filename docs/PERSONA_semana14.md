@@ -49,4 +49,8 @@
    - El aviso de cobro ahora dice cuándo se cobraría: "Antes de cobrar te preguntamos; si no dices que sí, no se te cobra nada. Cancelas mandando BAJA."
    - Se quitó "Estamos midiendo interés".
 
-**Sin arreglar todavía:** la frase "hipótesis, aún no a la venta" de la tarjeta de papás (lo hizo pensar que la app no existe), y la duda de en qué fila se apunta al apartar.
+**Arreglado después, el mismo día** (commit `06ce7fa`):
+- La tarjeta de papás ahora dice "Próximamente · únete a la lista de espera" en lugar de "hipótesis, aún no a la venta". El $69 sigue siendo hipótesis y eso queda en docs.
+- Abajo del precio de Student: "Cancelas cuando quieras mandando BAJA por WhatsApp. Antes de cobrar te preguntamos."
+- El aviso "no pide tarjeta" es más grande y tiene fondo.
+- La duda de en qué fila se apunta la cubren el título "Aparta tu lugar para el primer grupo" y la confirmación "Listo, quedaste en la lista".

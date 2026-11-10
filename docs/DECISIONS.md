@@ -284,13 +284,18 @@ Consequences / how we work with it:
 - **Siguen conviviendo $149 (en `/ahorro`) y $49 (en `/pricing`)** hasta que califiquen la Semana 13. El cambio que los une está en `post-semana-13`, ya respaldada en GitHub.
 
 **Pendiente**
-- **De este persona test, sin arreglar:** "hipótesis, aún no a la venta" en la tarjeta de papás, "¿cómo lo cancelo?" más visible, y el aviso "no pide tarjeta" de `/pricing` más grande.
+- ~~De este persona test, sin arreglar~~ → **arreglado el mismo día** (commit `06ce7fa`):
+  - La tarjeta de papás dice "Próximamente · únete a la lista de espera".
+  - Abajo del precio de Student: "Cancelas cuando quieras mandando BAJA por WhatsApp. Antes de cobrar te preguntamos."
+  - El aviso "no pide tarjeta" ahora es más grande. Ver `docs/TESTS.md`.
+- **El precio de $69 para papás sigue siendo hipótesis:** no se ha probado con ningún papá. La página ya no dice "hipótesis" porque hacía pensar que la app no existe, pero el dato no ha cambiado.
 - **Persona test con una persona real** (no un chat) y la conversación de precio real con un desconocido.
-- **Después de calificar la 13:**
-  - Merge de `semana-14` a `main`.
-  - Aplicar `post-semana-13`.
+- **Merge de `semana-14` a `main`: NO espera a la calificación de la 13** (corregido el 10 nov).
+  - `semana-14` solo agrega archivos nuevos, más `src/proxy.ts` (3 rutas públicas nuevas) y `docs/`. No cambia ninguna pantalla de la Semana 13.
+  - Se hace cuando el dueño lo diga. Después del merge: agregar `/pricing`, `/about` y `/apartar` a `tests/smoke.sh`.
+- **Lo que sí espera a la calificación de la 13:**
+  - Aplicar `post-semana-13`: botón "$149 por semestre" → "Ver planes", `/pago-pendiente` a $49 al mes y la prueba 11A.5 nueva.
   - Volver a prender Vercel Authentication.
-  - Agregar `/pricing`, `/about` y `/apartar` a `tests/smoke.sh`.
 - Revisión a mano de precios en el Walmart de Santa Fe.
 
 **Primer paso de mañana:** volver a pasar las 7 pantallas por el mismo persona test para ver si ya entiende qué hace el plan de $49. Después, la conversación de precio real con un desconocido.
