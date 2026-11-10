@@ -27,3 +27,36 @@
 - `tests/pricing.test.ts`: comprobación obligatoria, redondeo hacia arriba y que el ingreso no depende de cuánto gasta el usuario.
 - `tests/simulador.test.ts`: escenarios predefinidos y guardados (localStorage alterado se ignora; solo números, sin datos personales), y validación de cada campo (mínimo, máximo, decimales, largo; nunca NaN ni Infinity).
 - `tests/apartar.test.ts`: $49 / $69 según `?p=69`, mensaje y número de WhatsApp exactos, sin campos de tarjeta.
+
+---
+
+# Persona test (10 nov 2026)
+
+**Método:** un chat nuevo de Claude, fuera del proyecto, haciendo de **Andrés** (19 años, estudiante foráneo de Hermosillo), con 7 capturas de https://semana14.menuyamx.xyz en celular. El detalle y la tabla completa están en `docs/PERSONA_semana14.md`.
+
+**La confusión más grave:** nunca entendió qué hace el plan de $49, porque el día del depósito, el día 9 y el día 13 no se explicaban en ninguna pantalla. Se habría salido en el simulador ("parece tarea de emprendimiento") y al final no habría escrito por WhatsApp.
+
+## Qué se arregló
+
+| Hallazgo | Gravedad | Arreglo | Commit |
+|---|---|---|---|
+| No entiende los 3 beneficios de Student (en /pricing y otra vez en /apartar); teme que "reserva" toque su cuenta | Alta | Cada beneficio con una línea simple ("Día que te llega el dinero: … Nunca tocamos tu cuenta." · "Día 9: …" · "Día 13: …"), igual en las dos pantallas (`src/lib/planes.ts`) | `5ae5ac7` |
+| "La lista de súper" (Free): ¿me la hacen o la escribo? | Baja | "Te damos la lista; tú la sigues solo." | `5ae5ac7` |
+| Tarjeta "Estudiantes foráneos" vacía | Media | Una línea de qué resuelve | `5ae5ac7` |
+| El simulador parece para el negocio; se habría salido | Alta | Sección plegable "Para el curso: ¿cuándo se sostiene MenúYA?", cerrada por defecto y después de los límites. Funciona igual al abrirla | `fcef5c7` |
+| "Para diciembre" choca con que se va a Hermosillo | Media | "Para el primer grupo" (botón, título y mensaje de WhatsApp) | `bc70ed9` |
+| No hay confirmación de que ya apartó | Alta | "✓ Listo, quedaste en la lista." | `bc70ed9` |
+| "Avísanos por WhatsApp": ¿yo escribo?, ¿qué digo? | Alta | "Último paso: mándanos un WhatsApp para confirmar tu lugar (ya va escrito, solo dale enviar)." + botón "Confirmar por WhatsApp" | `bc70ed9` |
+| No sabe cuándo le cobrarían; "No se te cargó nada" lo asusta | Media / Baja | "Todavía no cobramos. Antes de cobrar te preguntamos; si no dices que sí, no se te cobra nada. Cancelas mandando BAJA." | `bc70ed9` |
+| "Estamos midiendo interés" = conejillo de indias | Media | Se quitó; la honestidad queda en "Todavía no cobramos" | `bc70ed9` |
+
+**Sin arreglar todavía:** "hipótesis, aún no a la venta" en la tarjeta de papás (lo hizo pensar que la app no existe); "$49/mes, ¿cómo lo cancelo?" solo se contesta en Límites y en /apartar; el aviso "no pide tarjeta" de /pricing sigue chico.
+
+## Cómo se verificó
+
+- Pruebas automáticas: 65/65 (`tests/planes.test.ts` nuevo; `tests/apartar.test.ts` actualizado).
+- Chrome a 375 px contra el sitio local:
+  - /pricing muestra los beneficios explicados, y la sección "Para el curso" carga cerrada. Al abrirla, el simulador da $43.47 y equilibrio v2 = 28.
+  - /apartar dice "para el primer grupo". Al picar sale "Listo, quedaste en la lista" con "Confirmar por WhatsApp", y el mensaje ya va escrito.
+  - Nada se sale por los lados.
+- Redespliegue: preview de `semana-14` en https://semana14.menuyamx.xyz. Producción sin cambios (`2f61acb`).

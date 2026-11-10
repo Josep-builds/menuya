@@ -265,3 +265,32 @@ Consequences / how we work with it:
 - Agregar `/pricing`, `/about` y `/apartar` a `tests/smoke.sh` cuando lleguen a producción.
 
 **Primer paso de mañana:** persona test + conversación de precio real.
+
+## 2026-11-10 · Session Close (persona test de la Semana 14)
+
+**Hecho hoy (rama `semana-14`; `main` y producción sin tocar)**
+- Persona test con Andrés (19, foráneo de Hermosillo), en un chat nuevo de Claude con 7 capturas de semana14.menuyamx.xyz en celular → `docs/PERSONA_semana14.md`.
+- **Arreglo principal:** cada beneficio de Student se explica en lenguaje simple, igual en `/pricing` y `/apartar`. Los textos están en un solo lugar (`src/lib/planes.ts`, componente `BeneficiosStudent`).
+  - El beneficio del depósito aclara "Nunca tocamos tu cuenta".
+  - Free dice "Te damos la lista; tú la sigues solo".
+  - La tarjeta de foráneos dice qué resuelve.
+- **Simulador:** queda en `/pricing`, dentro de un `<details>` "Para el curso: ¿cuándo se sostiene MenúYA?", cerrado y después de los límites. Las cuentas y las pruebas no cambiaron.
+- **`/apartar`:**
+  - "Para el primer grupo" en lugar de "para diciembre", también en el mensaje de WhatsApp.
+  - Confirmación "Listo, quedaste en la lista" con el último paso y el botón "Confirmar por WhatsApp".
+  - Aviso de cobro: "Antes de cobrar te preguntamos; si no dices que sí, no se te cobra nada. Cancelas mandando BAJA."
+  - Se quitó "Estamos midiendo interés".
+- `docs/TESTS.md` tiene la sección del persona test. Pasan 65/65 pruebas.
+- **Siguen conviviendo $149 (en `/ahorro`) y $49 (en `/pricing`)** hasta que califiquen la Semana 13. El cambio que los une está en `post-semana-13`, ya respaldada en GitHub.
+
+**Pendiente**
+- **De este persona test, sin arreglar:** "hipótesis, aún no a la venta" en la tarjeta de papás, "¿cómo lo cancelo?" más visible, y el aviso "no pide tarjeta" de `/pricing` más grande.
+- **Persona test con una persona real** (no un chat) y la conversación de precio real con un desconocido.
+- **Después de calificar la 13:**
+  - Merge de `semana-14` a `main`.
+  - Aplicar `post-semana-13`.
+  - Volver a prender Vercel Authentication.
+  - Agregar `/pricing`, `/about` y `/apartar` a `tests/smoke.sh`.
+- Revisión a mano de precios en el Walmart de Santa Fe.
+
+**Primer paso de mañana:** volver a pasar las 7 pantallas por el mismo persona test para ver si ya entiende qué hace el plan de $49. Después, la conversación de precio real con un desconocido.
