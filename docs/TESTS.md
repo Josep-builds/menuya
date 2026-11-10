@@ -32,7 +32,7 @@
 
 # Persona test (10 nov 2026)
 
-**Método:** un chat nuevo de Claude, fuera del proyecto, haciendo de **Andrés** (19 años, estudiante foráneo de Hermosillo), con 7 capturas de https://semana14.menuyamx.xyz en celular. El detalle y la tabla completa están en `docs/PERSONA_semana14.md`.
+**Método:** un chat nuevo de Claude, fuera del proyecto, haciendo de **Andrés** (19 años, estudiante foráneo de Hermosillo), con 7 capturas de https://semana14.menuyamx.xyz tomadas en iPad (Safari, navegación privada). El detalle y la tabla completa están en `docs/PERSONA_semana14.md`.
 
 **La confusión más grave:** nunca entendió qué hace el plan de $49, porque el día del depósito, el día 9 y el día 13 no se explicaban en ninguna pantalla. Se habría salido en el simulador ("parece tarea de emprendimiento") y al final no habría escrito por WhatsApp.
 

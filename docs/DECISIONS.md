@@ -269,7 +269,7 @@ Consequences / how we work with it:
 ## 2026-11-10 · Session Close (persona test de la Semana 14)
 
 **Hecho hoy (rama `semana-14`; `main` y producción sin tocar)**
-- Persona test con Andrés (19, foráneo de Hermosillo), en un chat nuevo de Claude con 7 capturas de semana14.menuyamx.xyz en celular → `docs/PERSONA_semana14.md`.
+- Persona test con Andrés (19, foráneo de Hermosillo), en un chat nuevo de Claude con 7 capturas de semana14.menuyamx.xyz tomadas en iPad (Safari, navegación privada) → `docs/PERSONA_semana14.md`.
 - **Arreglo principal:** cada beneficio de Student se explica en lenguaje simple, igual en `/pricing` y `/apartar`. Los textos están en un solo lugar (`src/lib/planes.ts`, componente `BeneficiosStudent`).
   - El beneficio del depósito aclara "Nunca tocamos tu cuenta".
   - Free dice "Te damos la lista; tú la sigues solo".

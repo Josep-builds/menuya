@@ -3,7 +3,7 @@
 ## Método
 
 - **Herramienta:** un chat nuevo de Claude, fuera del proyecto (sin el contexto de MenúYA), haciendo de la persona.
-- **Material:** 7 capturas de https://semana14.menuyamx.xyz tomadas en celular.
+- **Material:** 7 capturas de https://semana14.menuyamx.xyz tomadas en iPad (Safari, navegación privada).
 - **Fecha:** 10 de noviembre de 2026.
 - **Rama probada:** `semana-14` (todavía no está en producción).
 
