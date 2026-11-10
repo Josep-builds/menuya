@@ -19,3 +19,11 @@ export const BENEFICIOS_STUDENT: readonly Beneficio[] = [
 export const BENEFICIO_FREE = "Te damos la lista; tú la sigues solo.";
 
 export const PARA_FORANEOS = "Para que el dinero que te mandan te alcance hasta el siguiente depósito, sin pedir delivery los últimos días.";
+
+// Persona test 10 nov 2026, pendientes arreglados:
+/** Abajo del precio de Student: cómo se cancela y cuándo se cobraría. */
+export const CANCELAR_STUDENT = "Cancelas cuando quieras mandando BAJA por WhatsApp. Antes de cobrar te preguntamos.";
+/** Aviso de no cobro abajo de "Apartar mi lugar" (antes en letra muy chica). */
+export const AVISO_SIN_COBRO = "Todavía no cobramos. Apartar no pide tarjeta ni datos de pago.";
+/** Tarjeta de papás. El $69 sigue siendo hipótesis (ver docs/DECISIONS.md); ya no se dice en la página porque hacía pensar que la app no existe. */
+export const PAPAS_ESTADO = "Próximamente · únete a la lista de espera";

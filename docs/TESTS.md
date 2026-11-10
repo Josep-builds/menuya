@@ -60,3 +60,13 @@
   - /apartar dice "para el primer grupo". Al picar sale "Listo, quedaste en la lista" con "Confirmar por WhatsApp", y el mensaje ya va escrito.
   - Nada se sale por los lados.
 - Redespliegue: preview de `semana-14` en https://semana14.menuyamx.xyz. Producción sin cambios (`2f61acb`).
+
+## Pendientes del persona test, también arreglados (10 nov 2026)
+
+| Hallazgo | Gravedad | Arreglo |
+|---|---|---|
+| "Hipótesis, aún no a la venta" (tarjeta de papás) le hizo pensar que la app no existe | Media | Ahora dice "Próximamente · únete a la lista de espera". El precio de **$69 sigue siendo una hipótesis** (no se ha probado con ningún papá); eso queda solo en docs, ya no en la página. |
+| "$49/mes = suscripción, ¿cómo lo cancelo?" | Media | Abajo del precio de Student: "Cancelas cuando quieras mandando BAJA por WhatsApp. Antes de cobrar te preguntamos." |
+| El aviso "no pide tarjeta" lo calma, pero casi no lo ve | Baja | Mismo texto, pero más grande (sm en lugar de xs), con fondo verde claro y un candado, abajo del botón "Apartar mi lugar". |
+
+Verificado: 68/68 pruebas (3 nuevas en `tests/planes.test.ts`) y captura a 375 px. Nada se sale por los lados y el aviso no tapa el botón. Con esto, todos los hallazgos de la tabla del persona test tienen un arreglo.

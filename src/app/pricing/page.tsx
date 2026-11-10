@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BeneficiosStudent } from "@/components/BeneficiosStudent";
-import { BENEFICIO_FREE, PARA_FORANEOS } from "@/lib/planes";
+import { AVISO_SIN_COBRO, BENEFICIO_FREE, CANCELAR_STUDENT, PAPAS_ESTADO, PARA_FORANEOS } from "@/lib/planes";
 import { Simulador } from "./Simulador";
 
 export const metadata: Metadata = {
@@ -44,6 +44,7 @@ export default function PricingPage() {
           <p className="mt-1 text-3xl font-bold">
             $49 <span className="text-base font-medium text-neutral-600">MXN/mes</span>
           </p>
+          <p className="mt-1 text-sm text-neutral-600">{CANCELAR_STUDENT}</p>
           <div className="mt-4">
             <BeneficiosStudent />
           </div>
@@ -53,8 +54,9 @@ export default function PricingPage() {
           >
             Apartar mi lugar
           </Link>
-          <p className="mt-2 text-center text-xs text-neutral-500">
-            Todavía no cobramos. Apartar no pide tarjeta ni datos de pago.
+          <p className="mt-3 rounded-xl bg-green-50 px-3 py-2 text-center text-sm font-medium text-brand-dark">
+            <span aria-hidden>🔒 </span>
+            {AVISO_SIN_COBRO}
           </p>
         </article>
 
@@ -77,7 +79,9 @@ export default function PricingPage() {
             </span>
             <p className="mt-2 font-semibold">Papás que pagan por su hijo</p>
             <p className="mt-1 text-sm text-neutral-600">
-              Paga: el papá o la mamá · $69 MXN/mes (hipótesis, aún no a la venta)
+              Paga: el papá o la mamá · $69 MXN/mes
+            </p>
+            <p className="mt-1 text-sm font-medium text-neutral-700">{PAPAS_ESTADO}
             </p>
           </div>
         </div>
