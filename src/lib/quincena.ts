@@ -47,9 +47,11 @@ export const maximoFrescos = (items: readonly ItemEjemplo[]) => items.reduce((s,
 // Persona test 17 nov (Karla, simulación): no sabía para quién era, qué era "el grupo",
 // cuánto costaba ni qué pasaba con el resto de sus $1,500. Estos textos responden eso.
 export const PARA_QUIEN =
-  "Para 1 persona que compra en el Walmart de Santa Fe, CDMX. ¿Otra zona? Escríbenos igual y te avisamos cuando llegue.";
+  "Para 1 persona que compra en el Walmart de Santa Fe, CDMX. ¿Otra zona? El botón te anota en la lista de espera (no ocupa uno de los 10 lugares) y te avisamos cuando llegue.";
 export const PRECIO_CLARO =
   "Apartar es gratis. Cuando empiece, en enero, cuesta $49 al mes: menos que un pedido de delivery. Antes de cobrarte te preguntamos.";
+// Retest 17 nov: "¿qué pasa después de mandar el mensaje?"
+export const DESPUES = "Después: te contesta Josep por WhatsApp y te escribimos el 2 de enero para empezar.";
 export const CHAT_1A1 = "Es un chat 1 a 1 por WhatsApp, no un grupo: nadie más ve tu número.";
 // Fintonic (vía El Financiero): menores de 25 gastan ~$140 por pedido de delivery.
 export const DELIVERY = "3 pedidos de delivery de ~$140 son ~$420 en los últimos días de la quincena.";

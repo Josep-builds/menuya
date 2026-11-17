@@ -5,6 +5,7 @@ import {
   EJEMPLO_FECHA,
   EJEMPLO_FRESCOS,
   CHAT_1A1,
+  DESPUES,
   DELIVERY,
   NO_PROMETEMOS,
   PARA_QUIEN,
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 
 const PASOS = [
   { n: "1", t: "Te llega el dinero", d: "Nos dices cuánto te llegó y cuándo te vuelve a llegar. Nunca tocamos tu cuenta." },
-  { n: "2", t: "Te mandamos tu lista", d: "Por WhatsApp: qué comprar en Walmart, con precios que revisamos a mano cada semana." },
+  { n: "2", t: "Te mandamos tu lista", d: "Por WhatsApp: qué comprar en Walmart, con precios que revisamos a mano en walmart.com.mx cada semana." },
   { n: "3", t: "A media quincena revisamos", d: "Te preguntamos qué te queda. Si no te va a alcanzar, ajustamos antes de que se acabe." },
 ];
 
@@ -105,6 +106,7 @@ export default async function QuincenaPage({
           Apartar mi lugar para enero (gratis)
         </a>
         <p className="text-center text-sm text-neutral-700">{PRECIO_CLARO}</p>
+        <p className="text-center text-sm text-neutral-700">{DESPUES}</p>
         <p className="text-center text-sm text-neutral-600">
           {CHAT_1A1} Se abre WhatsApp con el mensaje ya escrito; no te pedimos tarjeta.
         </p>

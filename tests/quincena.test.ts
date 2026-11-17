@@ -50,3 +50,11 @@ test("persona test 17 nov: zona, 1 a 1, precio y resto del dinero se explican", 
   assert.match(code, /Calculamos con el precio más caro, para que no te quedes corto/);
   assert.doesNotMatch(code, /primer grupo/i);
 });
+
+test("retest 17 nov: otra zona = lista de espera, precios de la página, qué pasa después", () => {
+  const code = ["src/app/quincena/page.tsx", "src/lib/quincena.ts"].map((f) => readFileSync(f, "utf8")).join("\n");
+  assert.match(code, /te anota en la lista de espera \(no ocupa uno de los 10 lugares\)/);
+  assert.match(code, /revisamos a mano en walmart\.com\.mx cada semana/);
+  assert.match(code, /te escribimos el 2 de enero para empezar/);
+  assert.match(code, /\{DESPUES\}/);
+});
