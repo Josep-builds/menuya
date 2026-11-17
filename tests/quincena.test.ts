@@ -35,7 +35,7 @@ test("/quincena no tiene formulario, no pide datos y no promete ahorro", () => {
   const code = ["src/app/quincena/page.tsx", "src/lib/quincena.ts"].map((f) => readFileSync(f, "utf8")).join("\n");
   assert.doesNotMatch(code, /<input|<form|tarjeta de cr[eé]dito|±15%|vas a ahorrar \$/i);
   assert.match(code, /Todavía no cobramos/);
-  assert.match(code, /No prometemos cuánto vas a ahorrar/);
+  assert.match(code, /Lo que no prometemos:.*\n?.*\{NO_PROMETEMOS\}[\s\S]*cuánto vas a ahorrar ni precios exactos/);
 });
 
 test("/quincena es pública", () => {

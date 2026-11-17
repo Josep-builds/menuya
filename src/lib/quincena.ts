@@ -45,4 +45,4 @@ export const EJEMPLO_FRESCOS: readonly ItemEjemplo[] = [
 export const maximoFrescos = (items: readonly ItemEjemplo[]) => items.reduce((s, i) => s + i.max, 0);
 
 export const NO_PROMETEMOS =
-  "No prometemos cuánto vas a ahorrar ni precios exactos: los precios cambian y todavía no medimos qué tanto le atinamos.";
+  "cuánto vas a ahorrar ni precios exactos. Los precios cambian y todavía estamos midiendo qué tanto le atinamos.";
