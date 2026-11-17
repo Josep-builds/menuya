@@ -19,7 +19,7 @@ export const TITULO: Record<Grupo, string> = {
 };
 
 export function mensajeWhatsAppQuincena(g: Grupo): string {
-  return `Hola, vengo de la página de MenúYA [${ETIQUETA[g]}] y quiero entrar al primer grupo de enero.`;
+  return `Hola, vengo de la página de MenúYA [${ETIQUETA[g]}] y quiero apartar mi lugar para enero.`;
 }
 
 export function enlaceWhatsAppQuincena(g: Grupo): string {
@@ -43,6 +43,16 @@ export const EJEMPLO_FRESCOS: readonly ItemEjemplo[] = [
 
 /** Planeamos con el máximo del rango, nunca con el mínimo: quedarse corto es lo que rompe la promesa. */
 export const maximoFrescos = (items: readonly ItemEjemplo[]) => items.reduce((s, i) => s + i.max, 0);
+
+// Persona test 17 nov (Karla, simulación): no sabía para quién era, qué era "el grupo",
+// cuánto costaba ni qué pasaba con el resto de sus $1,500. Estos textos responden eso.
+export const PARA_QUIEN =
+  "Para 1 persona que compra en el Walmart de Santa Fe, CDMX. ¿Otra zona? Escríbenos igual y te avisamos cuando llegue.";
+export const PRECIO_CLARO =
+  "Apartar es gratis. Cuando empiece, en enero, cuesta $49 al mes: menos que un pedido de delivery. Antes de cobrarte te preguntamos.";
+export const CHAT_1A1 = "Es un chat 1 a 1 por WhatsApp, no un grupo: nadie más ve tu número.";
+// Fintonic (vía El Financiero): menores de 25 gastan ~$140 por pedido de delivery.
+export const DELIVERY = "3 pedidos de delivery de ~$140 son ~$420 en los últimos días de la quincena.";
 
 export const NO_PROMETEMOS =
   "cuánto vas a ahorrar ni precios exactos. Los precios cambian y todavía estamos midiendo qué tanto le atinamos.";
