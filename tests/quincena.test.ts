@@ -34,10 +34,27 @@ test("el ejemplo planea con el máximo de cada rango", () => {
 test("/quincena no tiene formulario, no pide datos y no promete ahorro", () => {
   const code = ["src/app/quincena/page.tsx", "src/lib/quincena.ts"].map((f) => readFileSync(f, "utf8")).join("\n");
   assert.doesNotMatch(code, /<input|<form|tarjeta de cr[eé]dito|±15%|vas a ahorrar \$/i);
-  assert.match(code, /Todavía no cobramos/);
+  assert.match(code, /Apartar es gratis\. Cuando empiece, en enero, cuesta \$49 al mes/);
   assert.match(code, /Lo que no prometemos:.*\n?.*\{NO_PROMETEMOS\}[\s\S]*cuánto vas a ahorrar ni precios exactos/);
 });
 
 test("/quincena es pública", () => {
   assert.match(readFileSync("src/proxy.ts", "utf8"), /"\/quincena"/);
+});
+
+test("persona test 17 nov: zona, 1 a 1, precio y resto del dinero se explican", () => {
+  const code = ["src/app/quincena/page.tsx", "src/lib/quincena.ts"].map((f) => readFileSync(f, "utf8")).join("\n");
+  assert.match(code, /Para 1 persona que compra en el Walmart de Santa Fe/);
+  assert.match(code, /chat 1 a 1 por WhatsApp, no un grupo: nadie más ve tu número/);
+  assert.match(code, /Esto es solo lo fresco\./);
+  assert.match(code, /Calculamos con el precio más caro, para que no te quedes corto/);
+  assert.doesNotMatch(code, /primer grupo/i);
+});
+
+test("retest 17 nov: otra zona = lista de espera, precios de la página, qué pasa después", () => {
+  const code = ["src/app/quincena/page.tsx", "src/lib/quincena.ts"].map((f) => readFileSync(f, "utf8")).join("\n");
+  assert.match(code, /te anota en la lista de espera \(no ocupa uno de los 10 lugares\)/);
+  assert.match(code, /revisamos a mano en walmart\.com\.mx cada semana/);
+  assert.match(code, /te escribimos el 2 de enero para empezar/);
+  assert.match(code, /\{DESPUES\}/);
 });

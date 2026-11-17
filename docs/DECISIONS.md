@@ -361,3 +361,12 @@ Consequences / how we work with it:
 - **Verificado por el dueño en el preview (17 nov):** `?g=est` y `?g=trab` cambian el título; el botón abre WhatsApp con `[Q-EST]` y `[Q-TRAB]`. Mensajes de prueba borrados sin enviar.
 - **Merge a `main`:** solo agrega `/quincena` y una ruta pública en `src/proxy.ts`. No cambia `/pricing`, `/about` ni `/apartar` (entrega de la Semana 14). 74/74 pruebas.
 - **Resultado esperado vs. real:** se anota después de publicar (jueves 19 nov, 8 pm). Cero respuestas también es resultado.
+
+## 2026-11-17 · Cambio de canal y persona test
+
+- **Canal (decisión del dueño, 17 nov):** no uso Facebook ni publico en WhatsApp. Entrevistas y prueba de distribución pasan a **en persona**: foráneos en la Ibero (QR `?g=est`) y trabajadores de mi edificio (QR `?g=trab`).
+  - Orden: primero las preguntas neutrales, al final la pieza y el QR, para no sesgar el criterio 1.
+  - Consentimiento verbal, sin nombres (U3, U4…). Con los trabajadores del edificio: dejar claro que pueden decir que no.
+  - Límite honesto: en la Ibero solo hay estudiantes, y los trabajadores del edificio quizá no son el perfil (20–30, roomies, Walmart). Se reporta así; la decisión del 30 nov queda más débil.
+- **Persona test (Karla, SIMULACIÓN):** ronda 1 no le picó; ronda 2 sí. Detalle en `docs/PERSONA_semana15.md`.
+- **Sin decidir:** si $49 al mes incluye una lista por cada quincena (2 al mes) o una sola.
