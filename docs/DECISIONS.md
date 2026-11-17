@@ -349,3 +349,15 @@ Consequences / how we work with it:
   - En el PDF del BUILDCHAT de la Semana 13, la llave anónima aparece como `[REDACTADO]`.
 - **Datos personales que quedaron públicos (decisión del dueño):** correos y nombre de la computadora en `docs/DECISIONS.md`, `db/seeds/` y `docs/BUILDCHAT_josepferre.pdf`. No se reescribió el historial, para no cambiar el commit del tag `semana-13`. No hay correos de usuarios reales; los de `tests/` son de prueba.
 - **Verificado sin login:** el repo, `/tree/semana-13` y `/tree/entrega-semana-14` responden 200.
+
+## 2026-11-17 · Semana 15 (Distribution · OPERATOR): `/quincena` y canales separados
+
+- **Canales separados (decisión del dueño, 17 nov):** el post neutral de entrevistas va solo a los 4 grupos del brief (sin nombrar el problema, para no sesgar el criterio 1). Las 2 piezas de MenúYA van a **otros** grupos de foráneos, fuera de la muestra.
+  - Pieza 1 (estudiantes, imagen + texto) → `menuyamx.xyz/quincena?g=est`
+  - Pieza 2 (trabajadores, solo texto) → `menuyamx.xyz/quincena?g=trab`
+- **`/quincena`** (rama `semana-15`, commits `102ac31` y `836983b`): página pública con 3 pasos, ejemplo real entrada → salida (precios Walmart 9 nov, rango; planeamos con el máximo, $389) y un único siguiente paso: WhatsApp con mensaje escrito y etiqueta `[Q-EST]`/`[Q-TRAB]`/`[Q-WEB]`.
+  - Sin formulario y sin base de datos: no se guardan datos personales. El conteo es por etiqueta en los mensajes que lleguen.
+  - Promesa que no hacemos: ni cuánto vas a ahorrar ni precios exactos (el ±15% sigue sin medir).
+- **Verificado por el dueño en el preview (17 nov):** `?g=est` y `?g=trab` cambian el título; el botón abre WhatsApp con `[Q-EST]` y `[Q-TRAB]`. Mensajes de prueba borrados sin enviar.
+- **Merge a `main`:** solo agrega `/quincena` y una ruta pública en `src/proxy.ts`. No cambia `/pricing`, `/about` ni `/apartar` (entrega de la Semana 14). 74/74 pruebas.
+- **Resultado esperado vs. real:** se anota después de publicar (jueves 19 nov, 8 pm). Cero respuestas también es resultado.
