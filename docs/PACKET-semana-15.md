@@ -29,7 +29,7 @@ Esta semana no elijo audiencia por intuición. Hay dos candidatos y una regla es
 
 ## 3. Definición de éxito (Semana 15)
 
-> **"`menuyamx.xyz/quincena` funciona en producción, las 2 piezas se publican el jueves 19 nov a las 8 pm en grupos fuera de mi muestra de entrevistas, y cada respuesta queda registrada por etiqueta (`[Q-EST]` / `[Q-TRAB]`). Si al domingo 22 nov hay cero mensajes, ese cero se reporta como resultado."**
+> **"`menuyamx.xyz/quincena` funciona en producción, las 2 piezas se publican el jueves 19 nov a las 8 pm en grupos fuera de mi muestra de entrevistas, y cada respuesta queda registrada por etiqueta ("soy estudiante" / "trabajo y cobro por quincena"). Si al domingo 22 nov hay cero mensajes, ese cero se reporta como resultado."**
 
 ## 4. Mockup
 
@@ -44,7 +44,7 @@ flowchart TD
     A["Post en grupo de Facebook<br/>(fuera de la muestra de entrevistas)"] --> B["/quincena?g=est o ?g=trab<br/>3 pasos + ejemplo real + límites"]
     B --> C{"¿Le pica al botón?"}
     C -- No --> D["Se cuenta solo como visita<br/>(si Vercel la registra)"]
-    C -- Sí --> E["WhatsApp con mensaje escrito<br/>y etiqueta [Q-EST]/[Q-TRAB]"]
+    C -- Sí --> E["WhatsApp con mensaje escrito<br/>y etiqueta del grupo"]
     E --> F{"¿Envía el mensaje?"}
     F -- Sí --> G["Josep responde a mano<br/>y lo anota: abrió → escribió"]
     F -- No --> D
@@ -139,7 +139,7 @@ flowchart LR
 | Audiencia | Estudiantes foráneos | Trabajadores por quincena |
 | Canal | 1 grupo de Facebook de foráneos, fuera de la muestra, con permiso del admin | 1 grupo de roomies, fuera de la muestra, con permiso del admin |
 | Link | `menuyamx.xyz/quincena?g=est` | `menuyamx.xyz/quincena?g=trab` |
-| Siguiente paso | WhatsApp con `[Q-EST]` | WhatsApp con `[Q-TRAB]` |
+| Siguiente paso | WhatsApp con "(soy estudiante)" | WhatsApp con "(trabajo y cobro por quincena)" |
 | Cuándo | Jueves 19 nov, 8 pm | Jueves 19 nov, 8 pm |
 
 **Por qué canales separados:** el post neutral de entrevistas va solo a los 4 grupos del brief. Si las piezas de MenúYA fueran a los mismos grupos, la gente llegaría a la entrevista sabiendo qué busco y el criterio 1 ("lo mencionan sin que se los pregunte") dejaría de valer.
@@ -151,8 +151,8 @@ flowchart LR
 | | Lo que espero | Lo que pasó |
 |---|---|---|
 | Reacciones / comentarios | 0–5 por post | |
-| Mensajes con `[Q-EST]` | 0–2 | |
-| Mensajes con `[Q-TRAB]` | 0–2 | |
+| Mensajes "(soy estudiante)" | 0–2 | |
+| Mensajes "(trabajo y cobro por quincena)" | 0–2 | |
 | Visitas a `/quincena` (si Vercel las muestra) | — | |
 | Lo que mantengo | | |
 | Lo que cambio | | |
@@ -203,10 +203,10 @@ Cada rol es un chat separado de IA con una entrada, una salida y un control de c
 
 **A mano (17 nov, por el dueño)**
 - [x] Preview `?g=est` y `?g=trab`: el título cambia
-- [x] El botón abre WhatsApp con `[Q-EST]` y `[Q-TRAB]` (mensajes borrados sin enviar)
+- [x] El botón abre WhatsApp con la etiqueta del grupo (17 nov como [Q-EST]/[Q-TRAB]; desde el 18 nov, etiqueta legible tras el persona test)
 - [x] Producción `menuyamx.xyz/quincena?g=trab` abre en celular sin login
 - [x] `/pricing` sigue igual que la entrega de la Semana 14
-- [ ] Persona test sintético en chat nuevo (pendiente)
+- [x] Persona test sintético en chat nuevo: 3 rondas (ver `PERSONA_semana15.md`)
 
 ## 12. Condiciones del Blueprint y cómo las respeto
 

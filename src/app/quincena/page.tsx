@@ -103,12 +103,12 @@ export default async function QuincenaPage({
           rel="noopener noreferrer"
           className="block w-full rounded-2xl bg-brand py-4 text-center text-lg font-semibold text-white hover:bg-brand-dark"
         >
-          Apartar mi lugar para enero (gratis)
+          Anotarme para enero (gratis)
         </a>
         <p className="text-center text-sm text-neutral-700">{PRECIO_CLARO}</p>
         <p className="text-center text-sm text-neutral-700">{DESPUES}</p>
         <p className="text-center text-sm text-neutral-600">
-          {CHAT_1A1} Se abre WhatsApp con el mensaje ya escrito; no te pedimos tarjeta.
+          {CHAT_1A1} Se abre WhatsApp con el mensaje ya escrito; solo agrega tu colonia. No te pedimos tarjeta.
         </p>
       </section>
 

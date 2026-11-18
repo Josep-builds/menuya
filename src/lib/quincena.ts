@@ -1,6 +1,7 @@
 // /quincena: página a donde llevan las piezas de la Semana 15 (prueba de distribución).
 // No guarda nada: el único paso siguiente es un WhatsApp con el mensaje ya escrito.
-// La etiqueta [Q-EST] / [Q-TRAB] / [Q-WEB] dice de qué pieza llegó la persona, sin pedir datos.
+// La etiqueta legible ("soy estudiante" / "trabajo y cobro por quincena") dice de qué QR o pieza llegó la persona.
+// Antes era [Q-EST]/[Q-TRAB]; el persona test (ronda 3) dijo que parecía código de rastreo.
 import { WHATSAPP_NUMERO } from "@/lib/apartar";
 
 export type Grupo = "est" | "trab" | "web";
@@ -10,7 +11,11 @@ export function grupoDesdeParam(g: string | string[] | undefined): Grupo {
   return g === "est" || g === "trab" ? g : "web";
 }
 
-export const ETIQUETA: Record<Grupo, string> = { est: "Q-EST", trab: "Q-TRAB", web: "Q-WEB" };
+export const ETIQUETA: Record<Grupo, string> = {
+  est: "soy estudiante",
+  trab: "trabajo y cobro por quincena",
+  web: "vi la página",
+};
 
 export const TITULO: Record<Grupo, string> = {
   est: "¿Se te acaba lo que te mandan antes de que te vuelva a llegar?",
@@ -19,7 +24,7 @@ export const TITULO: Record<Grupo, string> = {
 };
 
 export function mensajeWhatsAppQuincena(g: Grupo): string {
-  return `Hola, vengo de la página de MenúYA [${ETIQUETA[g]}] y quiero apartar mi lugar para enero.`;
+  return `Hola, vengo de la página de MenúYA (${ETIQUETA[g]}). Quiero anotarme para enero. Vivo en: `;
 }
 
 export function enlaceWhatsAppQuincena(g: Grupo): string {
