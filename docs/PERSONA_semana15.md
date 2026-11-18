@@ -34,3 +34,15 @@ Grupo y costo: resuelto. Para quién: casi. Ejemplo: a medias.
 | URL del preview da desconfianza | Las piezas usan solo `menuyamx.xyz/quincena` (producción) |
 
 **Lo que sobrevivió:** "Lo que no prometemos" fue lo más creíble para Karla en las dos rondas. El dato de ~$420 en delivery le pegó.
+
+## Ronda 3 (18 nov) — resultado: **sí le picaría**; producción `menuyamx.xyz/quincena?g=trab`
+
+**Resuelto según Karla:** lista de espera para otra zona, "a mano en walmart.com.mx", "te contesta Josep" (lo que más confianza le dio) y la URL de producción.
+
+| Hallazgo | ¿Se reprodujo? | Respuesta |
+|---|---|---|
+| El WhatsApp decía "entrar al primer grupo" | **No.** La vista previa del link ya traía el texto nuevo; lo que se vio era un borrador viejo en mi chat de notas | Sin cambio de código. Se prueba desde otro teléfono |
+| "[Q-TRAB]" parece código de rastreo | Sí | La etiqueta ahora es legible: "(trabajo y cobro por quincena)" / "(soy estudiante)" |
+| El mensaje no sirve si eres de otra zona | Sí | El mensaje termina en "Quiero anotarme para enero. Vivo en: " para que agregue su colonia |
+| El botón dice "Apartar" pero ella solo se anota | Sí | Botón: "Anotarme para enero (gratis)" |
+| No hay menú, ni reparto de los $1,500, ni claridad de $49 vs. 2 quincenas | — | **Sigue pendiente** (falta lista completa medida y la decisión de precio por quincena) |

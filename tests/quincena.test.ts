@@ -19,8 +19,8 @@ test("/quincena: solo ?g=est y ?g=trab cuentan; lo demás es web", () => {
 });
 
 test("el WhatsApp lleva la etiqueta del grupo y va al número de MenúYA", () => {
-  assert.match(mensajeWhatsAppQuincena("est"), /\[Q-EST\]/);
-  assert.match(mensajeWhatsAppQuincena("trab"), /\[Q-TRAB\]/);
+  assert.match(mensajeWhatsAppQuincena("est"), /\(soy estudiante\)/);
+  assert.match(mensajeWhatsAppQuincena("trab"), /\(trabajo y cobro por quincena\)/);
   const u = new URL(enlaceWhatsAppQuincena("web"));
   assert.equal(u.origin + u.pathname, "https://wa.me/525545022101");
   assert.equal(u.searchParams.get("text"), mensajeWhatsAppQuincena("web"));
@@ -57,4 +57,13 @@ test("retest 17 nov: otra zona = lista de espera, precios de la página, qué pa
   assert.match(code, /revisamos a mano en walmart\.com\.mx cada semana/);
   assert.match(code, /te escribimos el 2 de enero para empezar/);
   assert.match(code, /\{DESPUES\}/);
+});
+
+test("ronda 3: el mensaje no dice 'grupo', no lleva código y pide la colonia", () => {
+  for (const g of ["est", "trab", "web"] as const) {
+    const m = mensajeWhatsAppQuincena(g);
+    assert.doesNotMatch(m, /grupo|\[Q-/i);
+    assert.match(m, /Quiero anotarme para enero\. Vivo en: $/);
+  }
+  assert.match(readFileSync("src/app/quincena/page.tsx", "utf8"), /Anotarme para enero \(gratis\)/);
 });
